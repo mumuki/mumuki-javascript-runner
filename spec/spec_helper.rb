@@ -1,1 +1,1 @@
-require_relative '../lib/rspec_server'
+require_relative '../lib/mocha_server'
