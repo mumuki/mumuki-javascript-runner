@@ -1,8 +1,8 @@
 require 'mumukit'
 
 Mumukit.configure do |config|
-  config.docker_image = 'mumuki/mumuki-rspec-worker'
-  config.runner_name = 'rspec-server'
+  config.docker_image = 'mumuki/mumuki-mocha-worker'
+  config.runner_name = 'mocha-server'
   config.structured = true
 end
 
