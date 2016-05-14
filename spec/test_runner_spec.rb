@@ -9,12 +9,12 @@ end
 
 describe 'running' do
   let(:runner) { TestHook.new('mocha_command' => 'mocha') }
-  let(:file) { File.new('spec/data/sample.rb') }
-  let(:file_multi) { File.new('spec/data/sample_multi.rb') }
-  let(:file_failed) { File.new('spec/data/sample_failed.rb') }
+  let(:file) { File.new('spec/data/sample.js') }
+  let(:file_multi) { File.new('spec/data/sample_multi.js') }
+  let(:file_failed) { File.new('spec/data/sample_failed.js') }
 
   describe '#run_test_command' do
-    it { expect(runner.command_line(file.path)).to include('mocha spec/data/sample.rb') }
+    it { expect(runner.command_line(file.path)).to include('mocha spec/data/sample.js') }
   end
 
   describe '#run!' do
