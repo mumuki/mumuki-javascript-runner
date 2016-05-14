@@ -8,7 +8,7 @@ class TestHook < Mumukit::Templates::FileHook
   end
 
   def command_line(filename)
-    "#{rspec_command} #{filename} -f json"
+    "#{mocha_command} #{filename} -R json"
   end
 
   def to_structured_result(result)

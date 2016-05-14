@@ -1,1 +1,1 @@
-rspec_command: bundle exec rspec
+mocha_command: node_modules/.bin/mocha

@@ -1,1 +1,1 @@
-rspec_command: rspec
+mocha_command: mocha
