@@ -4,7 +4,7 @@ class TestHook < Mumukit::Templates::FileHook
   structured true
 
   def tempfile_extension
-    '.rb'
+    '.js'
   end
 
   def command_line(filename)
