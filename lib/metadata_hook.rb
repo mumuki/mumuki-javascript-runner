@@ -1,16 +1,16 @@
 class MetadataHook < Mumukit::Hook
   def metadata
     {language: {
-        name: 'ruby',
-        icon: {type: 'devicon', name: 'ruby'},
-        version: '2.0',
-        extension: 'rb',
-        ace_mode: 'ruby'
+        name: 'javascript',
+        icon: {type: 'devicon', name: 'javascript'},
+        version: '4.2.4',
+        extension: 'js',
+        ace_mode: 'javascript_badge'
     },
      test_framework: {
-         name: 'rspec',
-         version: '2.13',
-         test_extension: '.rb'
+         name: 'mocha',
+         version: '2.4.5',
+         test_extension: '.js'
      }}
   end
 end
