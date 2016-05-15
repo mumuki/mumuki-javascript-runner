@@ -12,9 +12,9 @@ describe 'runner' do
   after(:all) { Process.kill 'TERM', @pid }
 
   it 'prevents malicious net related code' do
-    response = bridge.run_tests!(test: 'describe "foo" do  it { expect(x).to eq 3 } end',
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                                  extra: '',
-                                 content: 'require "net/http"; Net::HTTP.get("http://www.google.com")',
+                                 content: 'require("http").get("http://google.com", (res) => res.statusCode)',
                                  expectations: [])
     expect(response[:status]).to eq(:errored)
     expect(response[:result]).to include("undefined method `hostname'")
@@ -22,13 +22,15 @@ describe 'runner' do
 
 
   pending 'prevents malicious allocation related code' do
-    response = bridge.run_tests!(test: 'describe "foo" do  it { expect(x).to eq 3 } end',
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                                  extra: '',
                                  expectations: [],
                                  content: <<-EOF
-
-  l = (1..1024*1024*10).map { Object.new }
-  l.size
+  var l = [];
+  for(var i = 1; i <= 1024*1024*10; i++) {
+    l.push(new Object())
+  }
+  x = l.lenght;
 
     EOF
     )
@@ -37,9 +39,9 @@ describe 'runner' do
 
 
   it 'answers a valid hash when submission is ok' do
-    response = bridge.run_tests!(test: 'describe "foo" do  it("bar") { expect(x).to eq 3 } end',
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                                  extra: '',
-                                 content: 'x = 3',
+                                 content: 'var x = 3',
                                  expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -52,14 +54,14 @@ describe 'runner' do
 
   it 'answers a valid hash when submission is not ok' do
     response = bridge.
-        run_tests!(test: 'describe("foo") do  it("bar"){ expect(x).to eq 3 } end',
+        run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                    extra: '',
-                   content: 'x = 2',
+                   content: 'var x = 2',
                    expectations: [])
 
     expect(response).to eq(response_type: :structured,
                            test_results: [
-                               {title: 'foo bar', status: :failed, result: "\nexpected: 3\n     got: 2\n\n(compared using ==)\n"}],
+                               {title: 'foo bar', status: :failed, result: '2 == 3'}],
                            status: :failed,
                            feedback: '',
                            expectation_results: [],
@@ -68,9 +70,9 @@ describe 'runner' do
 
   it 'answers a valid hash when submission timeouts' do
     response = bridge.
-        run_tests!(test: 'describe("foo") do  it("bar"){ sleep(300) ; expect(x).to eq 3 } end',
+        run_tests!(test: 'describe("foo", () => it("bar", function (done) { this.timeout(5000); setTimeout(() => { assert.equal(x, 3); done() }, 5000) }))',
                    extra: '',
-                   content: 'x = 2',
+                   content: 'var x = 2',
                    expectations: [])
 
     expect(response).to eq(response_type: :unstructured,
@@ -84,15 +86,15 @@ describe 'runner' do
 
   it 'answers a valid hash when submission has compilation errors' do
     response = bridge.
-        run_tests!(test: 'describe("foo") do  it("bar"){ expect(x).to eq 3 } end',
+        run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                    extra: '',
-                   content: 'x = ).',
+                   content: 'var x = ).',
                    expectations: [])
 
     expect(response[:status]).to eq :errored
     expect(response[:response_type]).to eq(:unstructured)
     expect(response[:test_results]).to be_empty
-    expect(response[:result]).to include("syntax error, unexpected ')' (SyntaxError)\nx = ).")
+    expect(response[:result]).to include('SyntaxError: Unexpected token )')
 
   end
 
