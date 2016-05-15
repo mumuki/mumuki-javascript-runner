@@ -1,5 +1,7 @@
+var assert = require('assert');
+
 const _true = true;
 
 describe('_true', () => {
-    it('is true', () => _true.should.be.eql(true));
+    it('is true', () => assert.equal(_true, true));
 });

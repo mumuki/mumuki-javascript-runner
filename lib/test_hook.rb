@@ -1,7 +1,16 @@
 class TestHook < Mumukit::Templates::FileHook
-  mashup
   isolated true
   structured true
+
+  def compile_file_content(request)
+<<javascript
+var assert = require('assert');
+
+#{request.extra}
+#{request.content}
+#{request.test}
+javascript
+  end
 
   def tempfile_extension
     '.js'
@@ -16,10 +25,10 @@ class TestHook < Mumukit::Templates::FileHook
   end
 
   def transform(examples)
-    examples.map { |e| [e['fullTitle'], e['status'], parse_out(e['err'])] }
+    examples.map { |e| [e['fullTitle'], e['err'].present? ? :failed : :passed, parse_out(e['err'])] }
   end
 
   def parse_out(exception)
-    exception ? exception['message'] : ''
+    exception.present? ? exception['message'] : ''
   end
 end
