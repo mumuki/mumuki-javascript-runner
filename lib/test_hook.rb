@@ -12,11 +12,11 @@ class TestHook < Mumukit::Templates::FileHook
   end
 
   def to_structured_result(result)
-    transform(super['examples'])
+    transform(super['tests'])
   end
 
   def transform(examples)
-    examples.map { |e| [e['full_description'], e['status'].to_sym, parse_out(e['exception'])] }
+    examples.map { |e| [e['fullTitle'], e['status'], parse_out(e['err'])] }
   end
 
   def parse_out(exception)
