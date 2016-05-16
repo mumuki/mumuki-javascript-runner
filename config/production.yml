@@ -1,1 +1,1 @@
-mocha_command: node_modules/.bin/mocha
+mocha_command: mocha
