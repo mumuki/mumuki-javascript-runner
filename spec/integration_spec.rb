@@ -12,12 +12,19 @@ describe 'runner' do
   after(:all) { Process.kill 'TERM', @pid }
 
   it 'prevents malicious net related code' do
-    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", (done) => foo(done)))',
                                  extra: '',
-                                 content: 'require("http").get("http://google.com", (res) => res.statusCode)',
-                                 expectations: [])
-    expect(response[:status]).to eq(:errored)
-    expect(response[:result]).to include("undefined method `hostname'")
+                                 expectations: [],
+                                 content: <<-javascript
+var http = require("http");
+
+function foo(done) {
+  http.get("http://google.com", (res) => done(res)).on('error', (e) => done(e))
+}
+javascript
+    )
+    expect(response[:test_results][0][:result]).to include('getaddrinfo ENOTFOUND')
+    expect(response[:status]).to eq(:failed)
   end
 
 
