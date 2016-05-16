@@ -4,6 +4,8 @@ class TestHook < Mumukit::Templates::FileHook
 
   def compile_file_content(request)
 <<javascript
+'use strict';
+
 var assert = require('assert');
 
 #{request.extra}
