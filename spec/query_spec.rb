@@ -14,6 +14,11 @@ describe QueryHook do
     it { expect(result[0]).to eq "=> 5\n" }
   end
 
+  context 'query with plus' do
+    let(:request) { OpenStruct.new(query: '4+5') }
+    it { expect(result[0]).to eq "=> 9\n" }
+  end
+
   context 'query and content' do
     let(:request) { OpenStruct.new(query: 'x', content: 'x=2*2') }
     it { expect(result[0]).to eq "=> 4\n" }
