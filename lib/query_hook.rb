@@ -25,7 +25,7 @@ javascript
 
   def compile_cookie(cookie)
     return if cookie.blank?
-    cookie.map { |query| "try { #{query} } catch (e) {}" }
+    cookie.map { |query| "try { #{query} } catch (e) {}" }.join("\n")
   end
 
   def command_line(filename)
