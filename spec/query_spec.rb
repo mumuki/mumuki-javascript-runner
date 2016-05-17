@@ -49,14 +49,31 @@ describe QueryHook do
     it { expect(result[0]).to eq "=> \"hello\"\n" }
   end
 
+  context 'query with var' do
+    let(:request) { OpenStruct.new(query: 'var x = 3;') }
+    it { expect(result[0]).to eq "=> undefined\n" }
+  end
+
   context 'query with plus' do
     let(:request) { OpenStruct.new(query: '4+5') }
     it { expect(result[0]).to eq "=> 9\n" }
   end
 
   context 'query and content' do
-    let(:request) { OpenStruct.new(query: 'x', content: 'x=2*2') }
-    it { expect(result[0]).to eq "=> 4\n" }
+    context 'no cookie' do
+      let(:request) { OpenStruct.new(query: 'x', content: 'x=2*2') }
+      it { expect(result[0]).to eq "=> 4\n" }
+    end
+
+    context 'with cookie' do
+      let(:request) { OpenStruct.new(query: 'x', cookie: ['x++', 'x++'], content: 'var x = 4') }
+      it { expect(result[0]).to eq "=> 6\n" }
+    end
+
+    context 'with failing cookie' do
+      let(:request) { OpenStruct.new(query: 'x', cookie: ['throw new Error("ups")', 'x++'], content: 'var x = 4') }
+      it { expect(result[0]).to eq "=> 5\n" }
+    end
   end
 
   context 'query and extra' do
