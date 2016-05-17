@@ -19,8 +19,16 @@ function mumukiConsolePrettyPrint(e) {
 
 #{compile_cookie(r.cookie)}
 
-console.log('=> ' + mumukiConsolePrettyPrint(#{r.query}))
+#{compile_query(r.query)}
 javascript
+  end
+
+  def compile_query(query)
+    if query.start_with? 'var '
+      "#{query}\nconsole.log('=> undefined')"
+    else
+      "console.log('=> ' + mumukiConsolePrettyPrint(#{query}))"
+    end
   end
 
   def compile_cookie(cookie)

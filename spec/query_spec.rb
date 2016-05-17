@@ -49,6 +49,10 @@ describe QueryHook do
     it { expect(result[0]).to eq "=> \"hello\"\n" }
   end
 
+  context 'query with var' do
+    let(:request) { OpenStruct.new(query: 'var x = 3;') }
+    it { expect(result[0]).to eq "=> undefined\n" }
+  end
 
   context 'query with plus' do
     let(:request) { OpenStruct.new(query: '4+5') }
