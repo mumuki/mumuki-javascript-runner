@@ -8,7 +8,7 @@ end
 
 
 describe 'running' do
-  let(:runner) { TestHook.new('mocha_command' => 'mocha') }
+  let(:runner) { JavascriptTestHook.new('mocha_command' => 'mocha') }
   let(:file) { File.new('spec/data/sample.js') }
   let(:file_multi) { File.new('spec/data/sample_multi.js') }
   let(:file_failed) { File.new('spec/data/sample_failed.js') }

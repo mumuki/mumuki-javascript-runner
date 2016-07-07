@@ -1,4 +1,4 @@
-class TestHook < Mumukit::Templates::FileHook
+class JavascriptTestHook < Mumukit::Templates::FileHook
   isolated true
   structured true
 
@@ -19,7 +19,7 @@ javascript
   end
 
   def command_line(filename)
-    "#{mocha_command} #{filename} -R json"
+    "mocha #{filename} -R json"
   end
 
   def to_structured_result(result)
