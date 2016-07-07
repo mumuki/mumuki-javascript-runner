@@ -1,4 +1,4 @@
-class QueryHook < Mumukit::Templates::FileHook
+class JavascriptQueryHook < Mumukit::Templates::FileHook
   isolated true
 
   def tempfile_extension

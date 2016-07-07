@@ -1,3 +1,3 @@
-require_relative 'lib/mocha_server'
+require_relative 'lib/javascript_server'
 
 run Mumukit::Server::App

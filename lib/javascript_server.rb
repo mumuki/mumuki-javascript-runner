@@ -1,8 +1,8 @@
 require 'mumukit'
 
+Mumukit.runner_name = 'javascript'
 Mumukit.configure do |config|
   config.docker_image = 'mumuki/mumuki-mocha-worker'
-  config.runner_name = 'mocha-server'
   config.structured = true
 end
 
