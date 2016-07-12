@@ -1,9 +1,8 @@
 require 'active_support/all'
-
 require 'mumukit/bridge'
 
 describe 'runner' do
-  let(:bridge) { Mumukit::Bridge::Bridge.new('http://localhost:4567') }
+  let(:bridge) { Mumukit::Bridge::Runner.new('http://localhost:4567') }
 
   before(:all) do
     @pid = Process.spawn 'rackup -p 4567', err: '/dev/null'
