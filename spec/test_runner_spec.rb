@@ -1,12 +1,5 @@
 require_relative './spec_helper'
 
-
-class File
-  def unlink
-  end
-end
-
-
 describe 'running' do
   let(:runner) { JavascriptTestHook.new('mocha_command' => 'mocha') }
   let(:file) { File.new('spec/data/sample.js') }
