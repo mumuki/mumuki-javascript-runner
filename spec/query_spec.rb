@@ -14,6 +14,12 @@ describe JavascriptQueryHook do
     it { expect(result[0]).to eq "=> 5\n" }
   end
 
+  context 'query with let' do
+    let(:request) { OpenStruct.new(query: 'x + 1', extra: 'let x = 4') }
+    it { expect(result[0]).to eq "=> 5\n" }
+  end
+
+
   context 'string query' do
     let(:request) { OpenStruct.new(query: '"hello"') }
     it { expect(result[0]).to eq "=> \"hello\"\n" }
@@ -61,7 +67,7 @@ describe JavascriptQueryHook do
 
   context 'query and content' do
     context 'no cookie' do
-      let(:request) { OpenStruct.new(query: 'x', content: 'x=2*2') }
+      let(:request) { OpenStruct.new(query: 'x', content: 'var x=2*2') }
       it { expect(result[0]).to eq "=> 4\n" }
     end
 
@@ -77,7 +83,7 @@ describe JavascriptQueryHook do
   end
 
   context 'query and extra' do
-    let(:request) { OpenStruct.new(query: 'y', extra: 'y=64+2') }
+    let(:request) { OpenStruct.new(query: 'y', extra: 'var y=64+2') }
     it { expect(result[0]).to eq "=> 66\n" }
   end
 end

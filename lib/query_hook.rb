@@ -8,6 +8,8 @@ class JavascriptQueryHook < Mumukit::Templates::FileHook
 
   def compile_file_content(r)
 <<javascript
+'use strict';
+
 function mumukiConsolePrettyPrint(e) {
     if (e instanceof Function) return '<function>';
     return JSON.stringify(e);
