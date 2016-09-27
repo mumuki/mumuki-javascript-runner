@@ -6,3 +6,11 @@ services:
 - docker
 before_install:
 - docker pull mumuki/mumuki-mocha-worker
+deploy:
+  provider: rubygems
+  api_key:
+    secure: IlCYgSD3OmBwGMbJdAPV9kQGXLokdBXfnYI6G+v+2LlrWYU2W6Mp6vgn/QEe71Y0mBuVVy0AezumfR9qdYhGTNsVTehAq8EAXSROE/o8Oo3Wah+ySvJtsZmHzwtAFOWMxnh/wbjtUqVH+cQzIWX93rHI97e95NSuDyuhXZfsj2u+HzYNRc9hI4pwQHCiWv74u0Fv6Kxe4keiWh374zEBXRkwh+O9qBLczKxjV0fVSp84Rc9K7CotNafnVc6v2oKzYBR03M01BMbEDiGYYtbpCZMV6wVirkAXIqegxPA9Pk3qjtiwW7HlPSJCHn3mxRC9Z0YSrCHvFF6y4kkjH0Av4XcjvPgIiIeeeL0jXbB9d0NL25AE3tUGXhuIIlL5FHYt9codptyNrmXkWKYtiBFnEL3w3U3aqF9TytGbzy1l+BqRQI6OLMBFubpQNbnqEGy6SA7WcTnvSqsZz3gcOtmPtTtRCiLuGT/8vsHiXB+b0O3AJSqkLiPusn7078R60msprcAEGbAQcnHoxy8tS0Tm2wQl1z44Iycxx0hGleHOwGHfJj8vtS3Xm5HGkKXYmV4MBmxNjDML/0UByuSSYqScfeShA7WZIS7/ePf5djZNOqCRkR2Spy+lbIwF5GWk3wWADrZss9qfumSfG1d4kcNv+JG+A5AxhXDYL8DJFBQwD4o=
+  gem: mumuki-javascript-runner
+  on:
+    tags: true
+    repo: mumuki/mumuki-javascript-runner
