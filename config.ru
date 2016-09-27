@@ -1,4 +1,4 @@
-require_relative 'lib/javascript_server'
+require_relative 'lib/javascript_runner'
 require 'mumukit/server/app'
 
 run Mumukit::Server::App
