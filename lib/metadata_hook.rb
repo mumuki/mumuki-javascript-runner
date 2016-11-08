@@ -5,7 +5,7 @@ class JavascriptMetadataHook < Mumukit::Hook
         icon: {type: 'devicon', name: 'javascript'},
         version: '4.2.4',
         extension: 'js',
-        ace_mode: 'javascript_badge'
+        ace_mode: 'javascript'
     },
      test_framework: {
          name: 'mocha',
