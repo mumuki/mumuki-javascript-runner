@@ -36,11 +36,11 @@ javascript
   for(var i = 1; i <= 1024*1024*10; i++) {
     l.push(new Object())
   }
-  x = l.lenght;
+  var x = l.lenght;
 
     EOF
     )
-    expect(response).to eq(:errored)
+    expect(response[:status]).to eq(:aborted)
   end
 
 
