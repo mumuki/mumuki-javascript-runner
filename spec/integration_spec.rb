@@ -36,18 +36,18 @@ javascript
   for(var i = 1; i <= 1024*1024*10; i++) {
     l.push(new Object())
   }
-  x = l.lenght;
+  var x = l.lenght;
 
     EOF
     )
-    expect(response).to eq(:errored)
+    expect(response[:status]).to eq(:aborted)
   end
 
 
   it 'answers a valid hash when submission is ok' do
-    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 3)))',
                                  extra: '',
-                                 content: 'var x = 3',
+                                 content: 'var aVariable = 3',
                                  expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -58,11 +58,25 @@ javascript
                            result: '')
   end
 
+  it 'answers a valid hash when submission is ok with warnings' do
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
+                                 extra: '',
+                                 content: 'var x = 3',
+                                 expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{title: 'foo bar', status: :passed, result: ''}],
+                           status: :passed_with_warnings,
+                           feedback: '',
+                           expectation_results: [{binding: 'x', inspection: 'HasTooShortBindings', result: :failed}],
+                           result: '')
+  end
+
   it 'answers a valid hash when submission is not ok' do
     response = bridge.
-        run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
+        run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 3)))',
                    extra: '',
-                   content: 'var x = 2',
+                   content: 'var aVariable = 2',
                    expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -85,7 +99,7 @@ javascript
                            test_results: [],
                            status: :aborted,
                            feedback: '',
-                           expectation_results: [],
+                           expectation_results: [{binding: 'x', inspection: 'HasTooShortBindings', result: :failed}],
                            result: 'Execution time limit of 4s exceeded. Is your program performing an infinite loop or recursion?')
   end
 
