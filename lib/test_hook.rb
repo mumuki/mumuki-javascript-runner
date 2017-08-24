@@ -1,6 +1,6 @@
 class JavascriptTestHook < Mumukit::Templates::FileHook
   isolated true
-  structured true
+  structured true, separator: '!!!JAVASCRIPT-MUMUKI-OUTPUT!!!'
 
   def compile_file_content(request)
 <<javascript
@@ -10,7 +10,13 @@ var assert = require('assert');
 
 #{request.extra}
 #{request.content}
-#{request.test}
+describe('', function() {
+  after(function() {
+    console.log("!!!JAVASCRIPT-MUMUKI-OUTPUT!!!");
+  });
+  #{request.test}
+})
+
 javascript
   end
 
