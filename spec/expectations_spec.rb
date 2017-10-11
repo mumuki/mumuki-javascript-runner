@@ -12,18 +12,18 @@ describe JavascriptExpectationsHook do
   let(:runner) { JavascriptExpectationsHook.new(mulang_path: './bin/mulang') }
   let(:result) { compile_and_run(req(expectations, code)) }
 
-  describe 'HasTooShortBindings' do
+  describe 'HasTooShortIdentifiers' do
     let(:code) { "function f(x) { retun g(x); }" }
     let(:expectations) { [] }
 
-    it { expect(result).to eq [{expectation: {binding: 'f', inspection: 'HasTooShortBindings'}, result: false}] }
+    it { expect(result).to eq [{expectation: {binding: 'f', inspection: 'HasTooShortIdentifiers'}, result: false}] }
   end
 
-  describe 'HasWrongCaseBindings' do
+  describe 'HasWrongCaseIdentifiers' do
     let(:code) { "function a_function_with_bad_case() { return 3 }" }
     let(:expectations) { [] }
 
-    it { expect(result).to eq [{expectation: {binding: 'a_function_with_bad_case', inspection: 'HasWrongCaseBindings'}, result: false}] }
+    it { expect(result).to eq [{expectation: {binding: 'a_function_with_bad_case', inspection: 'HasWrongCaseIdentifiers'}, result: false}] }
   end
 
   describe 'HasRedundantIf' do
@@ -36,9 +36,9 @@ describe JavascriptExpectationsHook do
   describe 'DeclaresProcedure' do
     let(:code) { "function foo(x, y) { }\nvar bar = 4;" }
     let(:expectations) { [
-      {binding: '', inspection: 'DeclaresProcedure:foo'},
-      {binding: '', inspection: 'DeclaresProcedure:bar'},
-      {binding: '', inspection: 'DeclaresProcedure:baz'}] }
+      {binding: '*', inspection: 'DeclaresProcedure:foo'},
+      {binding: '*', inspection: 'DeclaresProcedure:bar'},
+      {binding: '*', inspection: 'DeclaresProcedure:baz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: true},
@@ -50,9 +50,9 @@ describe JavascriptExpectationsHook do
   describe 'DeclaresFunction' do
     let(:code) { "function foo(x, y) { return x + y; }\nvar bar = 4;" }
     let(:expectations) { [
-      {binding: '', inspection: 'DeclaresFunction:foo'},
-      {binding: '', inspection: 'DeclaresFunction:bar'},
-      {binding: '', inspection: 'DeclaresFunction:baz'}] }
+      {binding: '*', inspection: 'DeclaresFunction:foo'},
+      {binding: '*', inspection: 'DeclaresFunction:bar'},
+      {binding: '*', inspection: 'DeclaresFunction:baz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: true},
@@ -63,9 +63,9 @@ describe JavascriptExpectationsHook do
   describe 'DeclaresVariable' do
     let(:code) { "function foo(x, y) { }\nvar bar = 4;" }
     let(:expectations) { [
-      {binding: '', inspection: 'DeclaresVariable:foo'},
-      {binding: '', inspection: 'DeclaresVariable:bar'},
-      {binding: '', inspection: 'DeclaresVariable:baz'}] }
+      {binding: '*', inspection: 'DeclaresVariable:foo'},
+      {binding: '*', inspection: 'DeclaresVariable:bar'},
+      {binding: '*', inspection: 'DeclaresVariable:baz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: false},
@@ -76,9 +76,9 @@ describe JavascriptExpectationsHook do
   describe 'Declares' do
     let(:code) { "function foo(x, y) { }\nvar bar = 4;" }
     let(:expectations) { [
-      {binding: '', inspection: 'Declares:foo'},
-      {binding: '', inspection: 'Declares:bar'},
-      {binding: '', inspection: 'Declares:baz'}] }
+      {binding: '*', inspection: 'Declares:foo'},
+      {binding: '*', inspection: 'Declares:bar'},
+      {binding: '*', inspection: 'Declares:baz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: true},
