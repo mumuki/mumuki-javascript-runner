@@ -68,7 +68,7 @@ javascript
                            test_results: [{title: 'foo bar', status: :passed, result: ''}],
                            status: :passed_with_warnings,
                            feedback: '',
-                           expectation_results: [{binding: 'x', inspection: 'HasTooShortBindings', result: :failed}],
+                           expectation_results: [{binding: 'x', inspection: 'HasTooShortIdentifiers', result: :failed}],
                            result: '')
   end
 
@@ -99,7 +99,7 @@ javascript
                            test_results: [],
                            status: :aborted,
                            feedback: '',
-                           expectation_results: [{binding: 'x', inspection: 'HasTooShortBindings', result: :failed}],
+                           expectation_results: [{binding: 'x', inspection: 'HasTooShortIdentifiers', result: :failed}],
                            result: 'Execution time limit of 4s exceeded. Is your program performing an infinite loop or recursion?')
   end
 
