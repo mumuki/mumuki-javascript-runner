@@ -9,7 +9,7 @@ describe JavascriptExpectationsHook do
     runner.run!(runner.compile(request))
   end
 
-  let(:runner) { JavascriptExpectationsHook.new(mulang_path: './bin/mulang') }
+  let(:runner) { JavascriptExpectationsHook.new }
   let(:result) { compile_and_run(req(expectations, code)) }
 
   describe 'HasTooShortIdentifiers' do
