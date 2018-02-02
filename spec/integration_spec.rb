@@ -118,4 +118,18 @@ javascript
 
   end
 
+  it 'answers a valid hash when given a known locale' do
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 4)))',
+                                 extra: '',
+                                 content: 'var aVariable = 3',
+                                 expectations: [],
+                                 locale: 'pt')
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{title: 'foo bar', status: :failed, result: '3 == 4'}],
+                           status: :failed,
+                           feedback: '',
+                           expectation_results: [],
+                           result: '')
+  end
 end
