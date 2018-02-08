@@ -29,7 +29,7 @@ javascript
     if query.start_with? 'var '
       "#{query}\nconsole.log('=> undefined')"
     else
-      "console.log('=> ' + mumukiConsolePrettyPrint(#{query}))"
+      "var variable = #{query}\nconsole.log('=> ' + mumukiConsolePrettyPrint(variable))"
     end
   end
 
