@@ -19,6 +19,10 @@ describe JavascriptQueryHook do
     it { expect(result[0]).to eq "=> 5\n" }
   end
 
+  context 'with semicolon' do
+    let(:request) { OpenStruct.new(query: '"hello".toString();') }
+    it { expect(result[0]).to eq "=> \"hello\"\n" }
+  end
 
   context 'string query' do
     let(:request) { OpenStruct.new(query: '"hello"') }
