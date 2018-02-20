@@ -26,7 +26,7 @@ javascript
   end
 
   def compile_query(query)
-    if query.start_with? 'var '
+    if query.start_with?('var ') || query.start_with?('let ')
       "#{query}\nconsole.log('=> undefined')"
     else
       "var __mumuki_query_result__ = #{query};\nconsole.log('=> ' + mumukiConsolePrettyPrint(__mumuki_query_result__))"

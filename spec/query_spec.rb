@@ -64,6 +64,11 @@ describe JavascriptQueryHook do
     it { expect(result[0]).to eq "=> undefined\n" }
   end
 
+  context 'query with let' do
+    let(:request) { OpenStruct.new(query: 'let x = 3') }
+    it { expect(result[0]).to eq "=> undefined\n" }
+  end
+
   context 'query with plus' do
     let(:request) { OpenStruct.new(query: '4+5') }
     it { expect(result[0]).to eq "=> 9\n" }
