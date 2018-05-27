@@ -28,9 +28,9 @@ javascript
     response = bridge.run_tests!(test: 'describe("foo", () => it("bar", (done) => foo(http, done)))',
                                  extra: '',
                                  expectations: [],
-                                 content: 'var http = require("http");')
+                                 content: 'require("something");')
     expect(response[:status]).to eq :aborted
-    expect(response[:result]).to eq 'require() is disabled'
+    expect(response[:result]).to eq 'You can not use require here'
   end
 
   it 'answers a valid hash when submission is ok' do

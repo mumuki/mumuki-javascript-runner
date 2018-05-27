@@ -1,17 +1,10 @@
 class JavascriptValidationHook < Mumukit::Hook
   def validate!(request)
-    raise Mumukit::RequestValidationError, 'require() is disabled' if uses_require?(request)
-    raise Mumukit::RequestValidationError, 'process object is disabled' if uses_process?(request)
+    matches = request_matches?(request) do |it|
+      it =~ /\W*(require|process|os|fs|eval|cluster|v8|vm|tty|tls|root|global|crypto|stream|events)\W*/
+    end
+    raise Mumukit::RequestValidationError, "You can not use #{$1} here" if matches
   end
-
-  def uses_require?(request)
-    request_matches?(request) { |it| it =~ /\W*require\s*\(/ }
-  end
-
-  def uses_process?(request)
-    request_matches?(request) { |it| it =~ /\W*process\W*/ }
-  end
-
 
   private
 
