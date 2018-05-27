@@ -11,13 +11,11 @@ describe 'runner' do
   after(:all) { Process.kill 'TERM', @pid }
 
   it 'prevents malicious net related code' do
-    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", (done) => foo(done)))',
+    response = bridge.run_tests!(test: 'var http = require("http"); describe("foo", () => it("bar", (done) => foo(http, done)))',
                                  extra: '',
                                  expectations: [],
                                  content: <<-javascript
-var http = require("http");
-
-function foo(done) {
+function foo(http, done) {
   http.get("http://google.com", (res) => done(res)).on('error', (e) => done(e))
 }
 javascript
@@ -26,23 +24,14 @@ javascript
     expect(response[:status]).to eq(:failed)
   end
 
-
-  pending 'prevents malicious allocation related code' do
-    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
+  it 'prevents calls to node require' do
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", (done) => foo(http, done)))',
                                  extra: '',
                                  expectations: [],
-                                 content: <<-EOF
-  var l = [];
-  for(var i = 1; i <= 1024*1024*10; i++) {
-    l.push(new Object())
-  }
-  var x = l.lenght;
-
-    EOF
-    )
-    expect(response[:status]).to eq(:aborted)
+                                 content: 'require("something");')
+    expect(response[:status]).to eq :aborted
+    expect(response[:result]).to eq 'You can not use require here'
   end
-
 
   it 'answers a valid hash when submission is ok' do
     response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 3)))',
