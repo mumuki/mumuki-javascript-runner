@@ -1,9 +1,9 @@
 class JavascriptValidationHook < Mumukit::Hook
   def validate!(request)
     matches = request_matches?(request) do |it|
-      it =~ /\W*(require|process|os|fs|eval|cluster|v8|vm|tty|tls|root|global|crypto|stream|events)\W*/
+      it =~ /(^|\W+)(require|process|os|fs|eval|cluster|v8|vm|tty|tls|root|global|crypto|stream|events)(\W+|$)/
     end
-    raise Mumukit::RequestValidationError, "You can not use #{$1} here" if matches
+    raise Mumukit::RequestValidationError, "You can not use #{$2} here" if matches
   end
 
   private

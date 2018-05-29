@@ -47,6 +47,20 @@ javascript
                            result: '')
   end
 
+  it 'answers a valid hash when submission is ok but has part of blacklisted words' do
+    response = bridge.run_tests!(test: 'describe("foos", () => it("bar", () => assert.equal(aVariable, 3)))',
+                                 extra: 'var flos = 75;',
+                                 content: 'var aVariable = 3',
+                                 expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{title: 'foos bar', status: :passed, result: ''}],
+                           status: :passed,
+                           feedback: '',
+                           expectation_results: [],
+                           result: '')
+  end
+
   it 'answers a valid hash when submission is ok with warnings' do
     response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                                  extra: '',
