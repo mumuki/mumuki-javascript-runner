@@ -1,9 +1,9 @@
-[![Stories in Ready](https://badge.waffle.io/mumuki/mumuki-rspec-server.png?label=ready&title=Ready)](https://waffle.io/mumuki/mumuki-rspec-server)
-[![Build Status](https://travis-ci.org/mumuki/mumuki-rspec-server.svg?branch=master)](https://travis-ci.org/mumuki/mumuki-rspec-server)
-[![Code Climate](https://codeclimate.com/github/mumuki/mumuki-rspec-server/badges/gpa.svg)](https://codeclimate.com/github/mumuki/mumuki-rspec-server)
-[![Test Coverage](https://codeclimate.com/github/mumuki/mumuki-rspec-server/badges/coverage.svg)](https://codeclimate.com/github/mumuki/mumuki-rspec-server)
+[![Build Status](https://travis-ci.org/mumuki/mumuki-javascript-runner.svg?branch=master)](https://travis-ci.org/mumuki/mumuki-javascript-runner)
+[![Code Climate](https://codeclimate.com/github/mumuki/mumuki-javascript-runner/badges/gpa.svg)](https://codeclimate.com/github/mumuki/mumuki-javascript-runner)
+[![Test Coverage](https://codeclimate.com/github/mumuki/mumuki-javascript-runner/badges/coverage.svg)](https://codeclimate.com/github/mumuki/mumuki-javascript-runner)
 
-> mumuki-rspec-server
+
+> mumuki-javascript-runner
 
 # Run the server
 
