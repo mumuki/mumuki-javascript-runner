@@ -45,7 +45,7 @@ describe JavascriptQueryHook do
 
   context 'object query' do
     let(:request) { struct(query: '{x: 4}') }
-    it { expect(result[0]).to eq "=> {\"x\":4}\n" }
+    it { expect(result[0]).to eq "=> {x:4}\n" }
   end
 
   context 'function query' do
