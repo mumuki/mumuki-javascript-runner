@@ -12,7 +12,8 @@ class JavascriptQueryHook < Mumukit::Templates::FileHook
 
 function mumukiConsolePrettyPrint(e) {
     if (e instanceof Function) return '<function>';
-    return JSON.stringify(e);
+    const json = JSON.stringify(e);
+    return json && json.replace(/"(\\w+)"\s*:/g, '$1:');
  }
 
 #{r.extra}
