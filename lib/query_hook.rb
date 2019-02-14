@@ -1,9 +1,9 @@
 class JavascriptQueryHook < Mumukit::Templates::FileHook
   isolated true
 
-  VAR_REGEXP = /^ *(?:var|let) ([a-zA-Z_$][a-zA-Z_$0-9]*)/
-  VAR_ASSIGN_REGEXP = /^ *(?:var|let) ([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
-  CONST_ASSIGN_REGEXP = /^ *const ([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
+  VAR_REGEXP = /^ *(?:var|let) +([a-zA-Z_$][a-zA-Z_$0-9]*)/
+  VAR_ASSIGN_REGEXP = /^ *(?:var|let) +([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
+  CONST_ASSIGN_REGEXP = /^ *const +([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
   
   def tempfile_extension
     '.js'
