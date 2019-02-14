@@ -46,7 +46,7 @@ javascript
   private
 
   def compile_sentences(cookie)
-    sentences = cookie.map do |query|
+    with_no_duplicated_declarations(cookie.map do |query|
       var_matches = query.match var_regexp
       var_assign_matches = query.match var_assign_regexp
       const_assign_matches = query.match const_assign_regexp
@@ -64,8 +64,10 @@ javascript
       else
         "try { #{query} } catch (e) {}"
       end
-    end
+    end)
+  end
 
+  def with_no_duplicated_declarations(sentences)
     sentences.select.with_index do |line, index|
       next line if !line.match(var_regexp) && !line.match(var_assign_regexp) && !line.match(const_assign_regexp)
 
