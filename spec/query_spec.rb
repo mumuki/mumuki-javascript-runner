@@ -73,6 +73,33 @@ describe JavascriptQueryHook do
     it { expect(result[0]).to eq "=> 9\n" }
   end
 
+  context 'query with let and const' do
+    context 'with let' do
+      let(:request) { struct(query: 'foo', cookie: ['let foo = 2']) }
+      it { expect(result[0]).to eq "=> 2\n" }
+    end
+
+    context 'with let and assignment' do
+      let(:request) { struct(query: 'foo', cookie: ['let foo = 2', 'foo = 56']) }
+      it { expect(result[0]).to eq "=> 56\n" }
+    end
+
+    context 'with multiple let' do
+      let(:request) { struct(query: 'foo', cookie: ['let foo = 2', 'let foo = 5']) }
+      it { expect(result[0]).to eq "=> 2\n" }
+    end
+
+    context 'with const' do
+      let(:request) { struct(query: 'foo', cookie: ['const foo = 9']) }
+      it { expect(result[0]).to eq "=> 9\n" }
+    end
+
+    context 'with conflicting names' do
+      let(:request) { struct(query: 'foo', cookie: ['var foo = 2', 'const foo = 4']) }
+      it { expect(result[0]).to eq "=> 2\n" }
+    end
+  end
+
   context 'query and content' do
     context 'no cookie' do
       let(:request) { struct(query: 'x', content: 'var x=2*2') }

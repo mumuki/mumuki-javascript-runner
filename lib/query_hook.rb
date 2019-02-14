@@ -26,7 +26,7 @@ javascript
   end
 
   def compile_query(query)
-    if ['var', 'let', 'const'].any? { |type| is_declaration?(query, type) }
+    if ['var', 'let', 'const'].any? { |type| query.start_with? "#{type} " }
       "#{query}\nconsole.log('=> undefined')"
     else
       "var __mumuki_query_result__ = #{query};\nconsole.log('=> ' + mumukiConsolePrettyPrint(__mumuki_query_result__))"
@@ -36,29 +36,7 @@ javascript
   def compile_cookie(cookie)
     return if cookie.blank?
 
-    declarations = compile_declarations cookie
-    sentences = compile_sentences cookie
-
-    declarations.concat(sentences).join("\n")
-  end
-
-  def compile_declarations(cookie)
-    cookie
-        .map { |query| query.match(let_regexp) }.compact
-        .map {|match| "let #{match[1]};" }.uniq
-  end
-
-  def compile_sentences(cookie)
-    cookie.map do |query|
-      query = query.gsub('let ', '') if is_declaration? query, 'let'
-      const_matches = query.match const_regexp
-
-      if const_matches
-        "const #{const_matches[1]} = (function() { try { return #{query.gsub(const_regexp, '')} } catch(e) { return undefined } })()"
-      else
-        "try { #{query} } catch (e) {}"
-      end
-    end
+    compile_sentences(cookie).join "\n"
   end
 
   def command_line(filename)
@@ -67,15 +45,64 @@ javascript
 
   private
 
-  def is_declaration?(query, type)
-    query.start_with? "#{type} "
+  def compile_sentences(cookie)
+    sentences = cookie.map do |query|
+      var_matches = query.match var_regexp
+      var_assign_matches = query.match var_assign_regexp
+      const_assign_matches = query.match const_assign_regexp
+
+      if const_assign_matches
+        declaration_with_assignment 'const', const_assign_matches[1], query.gsub(const_assign_regexp, '')
+      elsif var_matches
+        name = var_matches[1]
+
+        if var_assign_matches
+          declaration_with_assignment 'var', var_assign_matches[1], query.gsub(var_assign_regexp, '')
+        else
+          "var #{name}"
+        end
+      else
+        "try { #{query} } catch (e) {}"
+      end
+    end
+
+    sentences.select.with_index do |line, index|
+      next line if !line.match(var_regexp) && !line.match(var_assign_regexp) && !line.match(const_assign_regexp)
+
+      name = (line.match(var_assign_regexp) || line.match(var_regexp) || line.match(const_assign_regexp))[1]
+      sentences.slice(0, index).none? { |previousLine| is_declaration? previousLine, name }
+    end
   end
 
-  def let_regexp
-    /^let ([a-zA-Z_$][a-zA-Z_$0-9]*)/
+  def declaration_with_assignment(type, name, expression)
+    "#{type} #{name} = (function() { try { return #{expression} } catch(e) { return undefined } })()"
   end
 
-  def const_regexp
-    /^const ([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
+  def is_declaration?(line, name)
+    is_var_declaration?(line, name) || is_const_declaration?(line, name)
+  end
+
+  def is_var_declaration?(line, name)
+    var_matches = line.match var_regexp
+    var_assign_matches = line.match var_assign_regexp
+
+    (var_matches && var_matches[1] == name) || (var_assign_matches && var_assign_matches[1] == name)
+  end
+
+  def is_const_declaration?(line, name)
+    const_assign_matches = line.match const_assign_regexp
+    const_assign_matches && const_assign_matches[1] == name
+  end
+
+  def var_regexp
+    /^ *(?:var|let) ([a-zA-Z_$][a-zA-Z_$0-9]*)/
+  end
+
+  def var_assign_regexp
+    /^ *(?:var|let) ([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
+  end
+
+  def const_assign_regexp
+    /^ *const ([a-zA-Z_$][a-zA-Z_$0-9]*) *=/
   end
 end
