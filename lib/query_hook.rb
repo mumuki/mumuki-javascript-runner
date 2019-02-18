@@ -55,11 +55,12 @@ javascript
 
   def wrap_statements(cookie)
     cookie.map do |query|
-      if query.match(CONST_ASSIGN_REGEXP)
+      case query
+      when CONST_ASSIGN_REGEXP
         declaration_with_assignment 'const', $1, query.gsub(CONST_ASSIGN_REGEXP, '')
-      elsif query.match(VAR_ASSIGN_REGEXP)
+      when VAR_ASSIGN_REGEXP
         declaration_with_assignment 'var', $1, query.gsub(VAR_ASSIGN_REGEXP, '')
-      elsif query.match(VAR_REGEXP)
+      when VAR_REGEXP
         "var #{$1}"
       else
         "try { #{query} } catch (e) {}"
