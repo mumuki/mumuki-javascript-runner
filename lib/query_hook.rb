@@ -57,9 +57,9 @@ javascript
     cookie.map do |query|
       case query
       when CONST_ASSIGN_REGEXP
-        declaration_with_assignment 'const', $1, query.gsub(CONST_ASSIGN_REGEXP, '')
+        declaration_with_assignment 'const', CONST_ASSIGN_REGEXP, $1, query
       when VAR_ASSIGN_REGEXP
-        declaration_with_assignment 'var', $1, query.gsub(VAR_ASSIGN_REGEXP, '')
+        declaration_with_assignment 'var', VAR_ASSIGN_REGEXP, $1, query
       when VAR_REGEXP
         "var #{$1}"
       else
@@ -76,19 +76,17 @@ javascript
     end
   end
 
-  def declaration_with_assignment(type, name, expression)
-    "#{type} #{name} = (function() { try { return #{expression} } catch(e) { return undefined } })()"
+  def declaration_with_assignment(type, type_pattern, name, expression)
+    "#{type} #{name} = (function() { try { return #{expression.gsub(type_pattern, '')} } catch(e) { return undefined } })()"
   end
 
   def declaration?(line, name)
-    var_declaration?(line, name) || const_declaration?(line, name)
+    declaration_of_type?(VAR_REGEXP, line, name) ||
+      declaration_of_type?(VAR_ASSIGN_REGEXP, line, name) ||
+      declaration_of_type?(CONST_ASSIGN_REGEXP, line, name)
   end
 
-  def var_declaration?(line, name)
-    (line.match(VAR_REGEXP) && $1 == name) || (line.match(VAR_ASSIGN_REGEXP) && $1 == name)
-  end
-
-  def const_declaration?(line, name)
-    line.match(CONST_ASSIGN_REGEXP) && $1 == name
+  def declaration_of_type?(type_pattern, line, name)
+    line.match(type_pattern) && $1 == name
   end
 end
