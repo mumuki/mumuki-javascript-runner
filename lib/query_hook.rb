@@ -51,17 +51,12 @@ javascript
 
   def compile_sentences(cookie)
     without_duplicated_declarations(cookie.map do |query|
-      var_matches = query.match VAR_REGEXP
-      var_assign_matches = query.match VAR_ASSIGN_REGEXP
-      const_assign_matches = query.match CONST_ASSIGN_REGEXP
-
-      if const_assign_matches
-        declaration_with_assignment 'const', const_assign_matches[1], query.gsub(CONST_ASSIGN_REGEXP, '')
-      elsif var_matches
-        name = var_matches[1]
-
-        if var_assign_matches
-          declaration_with_assignment 'var', var_assign_matches[1], query.gsub(VAR_ASSIGN_REGEXP, '')
+      if query.match(CONST_ASSIGN_REGEXP)
+        declaration_with_assignment 'const', $1, query.gsub(CONST_ASSIGN_REGEXP, '')
+      elsif query.match(VAR_REGEXP)
+        name = $1
+        if query.match(VAR_ASSIGN_REGEXP)
+          declaration_with_assignment 'var', $1, query.gsub(VAR_ASSIGN_REGEXP, '')
         else
           "var #{name}"
         end
@@ -89,13 +84,10 @@ javascript
   end
 
   def var_declaration?(line, name)
-    var_matches = line.match VAR_REGEXP
-    var_assign_matches = line.match VAR_ASSIGN_REGEXP
-    (var_matches && var_matches[1] == name) || (var_assign_matches && var_assign_matches[1] == name)
+    (line.match(VAR_REGEXP) && $1 == name) || (line.match(VAR_ASSIGN_REGEXP) && $1 == name)
   end
 
   def const_declaration?(line, name)
-    const_assign_matches = line.match CONST_ASSIGN_REGEXP
-    const_assign_matches && const_assign_matches[1] == name
+    line.match(CONST_ASSIGN_REGEXP) && $1 == name
   end
 end
