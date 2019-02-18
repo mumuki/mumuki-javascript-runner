@@ -8,75 +8,72 @@ describe JavascriptQueryHook do
     hook.run!(file)
   }
 
-  context 'integral query' do
-    let(:request) { struct(query: '5') }
-    it { expect(result[0]).to eq "=> 5\n" }
+  describe 'expressions' do
+    context 'integral query' do
+      let(:request) { struct(query: '5') }
+      it { expect(result[0]).to eq "=> 5\n" }
+    end
+
+    context 'with semicolon' do
+      let(:request) { struct(query: '"hello".toString();') }
+      it { expect(result[0]).to eq "=> \"hello\"\n" }
+    end
+
+    context 'string query' do
+      let(:request) { struct(query: '"hello"') }
+      it { expect(result[0]).to eq "=> \"hello\"\n" }
+    end
+
+    context 'array query' do
+      let(:request) { struct(query: '[1,2, 3]') }
+      it { expect(result[0]).to eq "=> [1,2,3]\n" }
+    end
+
+    context 'null query' do
+      let(:request) { struct(query: 'null') }
+      it { expect(result[0]).to eq "=> null\n" }
+    end
+
+    context 'undefined query' do
+      let(:request) { struct(query: 'undefined') }
+      it { expect(result[0]).to eq "=> undefined\n" }
+    end
+
+    context 'object query' do
+      let(:request) { struct(query: '{x: 4}') }
+      it { expect(result[0]).to eq "=> {x:4}\n" }
+    end
+
+    context 'function query' do
+      let(:request) { struct(query: '(function () {})') }
+      it { expect(result[0]).to eq "=> <function>\n" }
+    end
+
+    context 'string query' do
+      let(:request) { struct(query: '"hello"') }
+      it { expect(result[0]).to eq "=> \"hello\"\n" }
+    end
+
+    context 'with plus' do
+      let(:request) { struct(query: '4+5') }
+      it { expect(result[0]).to eq "=> 9\n" }
+    end
   end
 
-  context 'query with let' do
-    let(:request) { struct(query: 'x + 1', extra: 'let x = 4') }
-    it { expect(result[0]).to eq "=> 5\n" }
-  end
-
-  context 'with semicolon' do
-    let(:request) { struct(query: '"hello".toString();') }
-    it { expect(result[0]).to eq "=> \"hello\"\n" }
-  end
-
-  context 'string query' do
-    let(:request) { struct(query: '"hello"') }
-    it { expect(result[0]).to eq "=> \"hello\"\n" }
-  end
-
-  context 'array query' do
-    let(:request) { struct(query: '[1,2, 3]') }
-    it { expect(result[0]).to eq "=> [1,2,3]\n" }
-  end
-
-  context 'null query' do
-    let(:request) { struct(query: 'null') }
-    it { expect(result[0]).to eq "=> null\n" }
-  end
-
-  context 'undefined query' do
-    let(:request) { struct(query: 'undefined') }
-    it { expect(result[0]).to eq "=> undefined\n" }
-  end
-
-  context 'object query' do
-    let(:request) { struct(query: '{x: 4}') }
-    it { expect(result[0]).to eq "=> {x:4}\n" }
-  end
-
-  context 'function query' do
-    let(:request) { struct(query: '(function () {})') }
-    it { expect(result[0]).to eq "=> <function>\n" }
-  end
-
-  context 'string query' do
-    let(:request) { struct(query: '"hello"') }
-    it { expect(result[0]).to eq "=> \"hello\"\n" }
-  end
-
-  context 'query with var' do
-    let(:request) { struct(query: 'var x = 3;') }
-    it { expect(result[0]).to eq "=> undefined\n" }
-  end
-
-  context 'query with let' do
-    let(:request) { struct(query: 'let x = 3') }
-    it { expect(result[0]).to eq "=> undefined\n" }
-  end
-
-  context 'query with plus' do
-    let(:request) { struct(query: '4+5') }
-    it { expect(result[0]).to eq "=> 9\n" }
-  end
-
-  context 'query with let and const' do
+  describe 'declarations' do
     context 'with let' do
+      let(:request) { struct(query: 'let x = 3') }
+      it { expect(result[0]).to eq "=> undefined\n" }
+    end
+
+    context 'with let and accessing' do
       let(:request) { struct(query: 'foo', cookie: ['let foo = 2']) }
       it { expect(result[0]).to eq "=> 2\n" }
+    end
+
+    context 'with var' do
+      let(:request) { struct(query: 'var x = 3;') }
+      it { expect(result[0]).to eq "=> undefined\n" }
     end
 
     context 'with let and assignment' do
@@ -85,8 +82,16 @@ describe JavascriptQueryHook do
     end
 
     context 'with multiple let' do
-      let(:request) { struct(query: 'foo', cookie: ['let foo = 2', 'let foo = 5']) }
-      it { expect(result[0]).to eq "=> 2\n" }
+      describe 'declaring' do
+        let(:request) { struct(query: 'let foo = 5', cookie: ['let foo = 2']) }
+        it { expect(result[0]).to include "Identifier 'foo' has already been declared" }
+        pending { expect(result[1]).to eq :errored }
+      end
+
+      describe 'accessing' do
+        let(:request) { struct(query: 'foo', cookie: ['let foo = 2', 'let foo = 5']) }
+        it { expect(result[0]).to eq "=> 2\n" }
+      end
     end
 
     context 'with const' do
@@ -94,9 +99,43 @@ describe JavascriptQueryHook do
       it { expect(result[0]).to eq "=> 9\n" }
     end
 
+    context 'with const and reassignment' do
+      describe 'declaring' do
+        let(:request) { struct(query: 'foo = 0', cookie: ['const foo = 9']) }
+        it { expect(result[0]).to include "Assignment to constant variable" }
+        pending { expect(result[1]).to eq :errored }
+      end
+
+      describe 'accessing' do
+        let(:request) { struct(query: 'foo', cookie: ['const foo = 9', 'foo = 0']) }
+        it { expect(result[0]).to eq "=> 9\n" }
+      end
+    end
+
+    context 'with multiple const' do
+      describe 'declaring' do
+        let(:request) { struct(query: 'const foo = 5', cookie: ['const foo = 9']) }
+        it { expect(result[0]).to include "Identifier 'foo' has already been declared\n" }
+        pending { expect(result[1]).to eq :errored }
+      end
+
+      describe 'accessing' do
+        let(:request) { struct(query: 'foo', cookie: ['const foo = 9', 'const foo = 5']) }
+        it { expect(result[0]).to eq "=> 9\n" }
+      end
+    end
+
     context 'with conflicting names' do
-      let(:request) { struct(query: 'foo', cookie: ['var foo = 2', 'const foo = 4']) }
-      it { expect(result[0]).to eq "=> 2\n" }
+      describe 'declaring' do
+        let(:request) { struct(query: 'const foo = 4', cookie: ['var foo = 2']) }
+        it { expect(result[0]).to include "Identifier 'foo' has already been declared" }
+        pending { expect(result[1]).to eq :errored }
+      end
+
+      describe 'accessing' do
+        let(:request) { struct(query: 'foo', cookie: ['var foo = 2', 'const foo = 4']) }
+        it { expect(result[0]).to eq "=> 2\n" }
+      end
     end
   end
 
@@ -118,7 +157,14 @@ describe JavascriptQueryHook do
   end
 
   context 'query and extra' do
-    let(:request) { struct(query: 'y', extra: 'var y=64+2') }
-    it { expect(result[0]).to eq "=> 66\n" }
+    context 'with variable' do
+      let(:request) { struct(query: 'y', extra: 'var y=64+2') }
+      it { expect(result[0]).to eq "=> 66\n" }
+    end
+
+    context 'with expression ' do
+      let(:request) { struct(query: 'x + 1', extra: 'let x = 4') }
+      it { expect(result[0]).to eq "=> 5\n" }
+    end
   end
 end
