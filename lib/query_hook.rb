@@ -53,13 +53,10 @@ javascript
     without_duplicated_declarations(cookie.map do |query|
       if query.match(CONST_ASSIGN_REGEXP)
         declaration_with_assignment 'const', $1, query.gsub(CONST_ASSIGN_REGEXP, '')
+      elsif query.match(VAR_ASSIGN_REGEXP)
+        declaration_with_assignment 'var', $1, query.gsub(VAR_ASSIGN_REGEXP, '')
       elsif query.match(VAR_REGEXP)
-        name = $1
-        if query.match(VAR_ASSIGN_REGEXP)
-          declaration_with_assignment 'var', $1, query.gsub(VAR_ASSIGN_REGEXP, '')
-        else
-          "var #{name}"
-        end
+        "var #{$1}"
       else
         "try { #{query} } catch (e) {}"
       end
