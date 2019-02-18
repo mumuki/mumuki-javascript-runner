@@ -40,7 +40,7 @@ javascript
   def compile_cookie(cookie)
     return if cookie.blank?
 
-    compile_sentences(cookie).join "\n"
+    compile_statements(cookie).join "\n"
   end
 
   def command_line(filename)
@@ -49,8 +49,12 @@ javascript
 
   private
 
-  def compile_sentences(cookie)
-    without_duplicated_declarations(cookie.map do |query|
+  def compile_statements(cookie)
+    reject_duplicated_statements wrap_statements(cookie)
+  end
+
+  def wrap_statements(cookie)
+    cookie.map do |query|
       if query.match(CONST_ASSIGN_REGEXP)
         declaration_with_assignment 'const', $1, query.gsub(CONST_ASSIGN_REGEXP, '')
       elsif query.match(VAR_ASSIGN_REGEXP)
@@ -60,10 +64,10 @@ javascript
       else
         "try { #{query} } catch (e) {}"
       end
-    end)
+    end
   end
 
-  def without_duplicated_declarations(sentences)
+  def reject_duplicated_statements(sentences)
     sentences.select.with_index do |line, index|
       next line if !line.match(VAR_REGEXP) && !line.match(VAR_ASSIGN_REGEXP) && !line.match(CONST_ASSIGN_REGEXP)
 
