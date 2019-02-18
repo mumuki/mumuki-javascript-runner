@@ -70,9 +70,8 @@ javascript
 
   def reject_duplicated_statements(sentences)
     sentences.select.with_index do |line, index|
-      next line if !line.match(VAR_REGEXP) && !line.match(VAR_ASSIGN_REGEXP) && !line.match(CONST_ASSIGN_REGEXP)
-
-      name = (line.match(VAR_ASSIGN_REGEXP) || line.match(VAR_REGEXP) || line.match(CONST_ASSIGN_REGEXP))[1]
+      next line if !line.match(VAR_ASSIGN_REGEXP) && !line.match(VAR_REGEXP) && !line.match(CONST_ASSIGN_REGEXP)
+      name = $1
       sentences.slice(0, index).none? { |previous_line| declaration? previous_line, name }
     end
   end
