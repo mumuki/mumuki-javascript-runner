@@ -10,6 +10,10 @@ class JavascriptQueryHook < Mumukit::Templates::FileHook
   end
 
   def compile_file_content(r)
+    "#{compile_file_header(r)}\n#{compile_query(r.query)}"
+  end
+
+  def compile_file_header(r)
 <<javascript
 'use strict';
 
@@ -24,16 +28,14 @@ function mumukiConsolePrettyPrint(e) {
 #{r.content}
 
 #{compile_cookie(r.cookie)}
-
-#{compile_query(r.query)}
 javascript
   end
 
-  def compile_query(query)
+  def compile_query(query, output_prefix = "=> ", output_var = "__mumuki_query_result__")
     if ['var', 'let', 'const'].any? { |type| query.start_with? "#{type} " }
-      "#{query}\nconsole.log('=> undefined')"
+      "#{query}\nconsole.log('#{output_prefix}undefined')"
     else
-      "var __mumuki_query_result__ = #{query};\nconsole.log('=> ' + mumukiConsolePrettyPrint(__mumuki_query_result__))"
+      "var #{output_var} = #{query};\nconsole.log('#{output_prefix}' + mumukiConsolePrettyPrint(#{output_var}))"
     end
   end
 
