@@ -85,7 +85,7 @@ describe JavascriptQueryHook do
       describe 'declaring' do
         let(:request) { struct(query: 'let foo = 5', cookie: ['let foo = 2']) }
         it { expect(result[0]).to include "Identifier 'foo' has already been declared" }
-        pending { expect(result[1]).to eq :errored }
+        it { expect(result[1]).to eq :errored }
       end
 
       describe 'accessing' do
@@ -115,8 +115,8 @@ describe JavascriptQueryHook do
     context 'with multiple const' do
       describe 'declaring' do
         let(:request) { struct(query: 'const foo = 5', cookie: ['const foo = 9']) }
-        it { expect(result[0]).to include "Identifier 'foo' has already been declared\n" }
-        pending { expect(result[1]).to eq :errored }
+        it { expect(result[0]).to include "Identifier 'foo' has already been declared" }
+        it { expect(result[1]).to eq :errored }
       end
 
       describe 'accessing' do
@@ -129,7 +129,7 @@ describe JavascriptQueryHook do
       describe 'declaring' do
         let(:request) { struct(query: 'const foo = 4', cookie: ['var foo = 2']) }
         it { expect(result[0]).to include "Identifier 'foo' has already been declared" }
-        pending { expect(result[1]).to eq :errored }
+        it { expect(result[1]).to eq :errored }
       end
 
       describe 'accessing' do
@@ -165,6 +165,26 @@ describe JavascriptQueryHook do
     context 'with expression ' do
       let(:request) { struct(query: 'x + 1', extra: 'let x = 4') }
       it { expect(result[0]).to eq "=> 5\n" }
+    end
+  end
+
+  context 'query with syntax errors' do
+    context 'with invalid token' do
+      let(:request) { struct(query: '!') }
+      it { expect(result[0]).to eq %q{var __mumuki_query_result__ = !;
+                               ^
+
+SyntaxError: Unexpected token ;} }
+      it { expect(result[1]).to eq :errored }
+    end
+
+    context 'with unclosed curly braces' do
+      let(:request) { struct(query: 'function () {') }
+      it { expect(result[0]).to eq %q`});
+ ^
+
+SyntaxError: Unexpected token )` }
+      it { expect(result[1]).to eq :errored }
     end
   end
 end

@@ -1,4 +1,5 @@
 class JavascriptQueryHook < Mumukit::Templates::FileHook
+  with_error_patterns
   isolated true
 
   VAR_REGEXP = /^ *(?:var|let) +([a-zA-Z_$][a-zA-Z_$0-9]*)/
@@ -90,5 +91,15 @@ javascript
 
   def declaration_of_type?(type_pattern, line, name)
     line.match(type_pattern) && $1 == name
+  end
+
+  def error_patterns
+    [
+      Mumukit::ErrorPattern::Errored.new(syntax_error_regexp)
+    ]
+  end
+
+  def syntax_error_regexp
+    /(?=\X*SyntaxError)(solution.*\n)|SyntaxError.*\n\K    at \X*/
   end
 end
