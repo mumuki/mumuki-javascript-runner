@@ -95,11 +95,15 @@ javascript
 
   def error_patterns
     [
-      Mumukit::ErrorPattern::Errored.new(syntax_error_regexp)
+      Mumukit::ErrorPattern::Errored.new(error_regexp)
     ]
   end
 
-  def syntax_error_regexp
-    /(?=\X*SyntaxError)(solution.*\n)|SyntaxError.*\n\K    at \X*/
+  def error_types
+    '(Reference|Syntax|Type)Error'
+  end
+
+  def error_regexp
+    /(?=\X*#{error_types})(solution.*\n|var __mumuki_query_result__ = )|#{error_types}.*\n\K\X*/
   end
 end
