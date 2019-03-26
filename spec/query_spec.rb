@@ -103,7 +103,7 @@ describe JavascriptQueryHook do
       describe 'declaring' do
         let(:request) { struct(query: 'foo = 0', cookie: ['const foo = 9']) }
         it { expect(result[0]).to include "Assignment to constant variable" }
-        pending { expect(result[1]).to eq :errored }
+        it { expect(result[1]).to eq :errored }
       end
 
       describe 'accessing' do
@@ -171,7 +171,7 @@ describe JavascriptQueryHook do
   context 'query with syntax errors' do
     context 'with invalid token' do
       let(:request) { struct(query: '!') }
-      it { expect(result[0]).to eq %q{var __mumuki_query_result__ = !;
+      it { expect(result[0]).to eq %q{!;
                                ^
 
 SyntaxError: Unexpected token ;} }
@@ -186,5 +186,12 @@ SyntaxError: Unexpected token ;} }
 SyntaxError: Unexpected token )` }
       it { expect(result[1]).to eq :errored }
     end
+  end
+
+  context 'query with unknown reference' do
+    let(:request) { struct(query: 'someFunction(23)') }
+    it { expect(result[0]).to include 'ReferenceError' }
+    it { expect(result[0]).to_not include '__mumuki_query_result__' }
+    it { expect(result[1]).to eq :errored }
   end
 end
