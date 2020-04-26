@@ -135,4 +135,31 @@ javascript
                            expectation_results: [],
                            result: '')
   end
+
+
+  it 'answers a valid hash when submission fails with `is not defined`' do
+    response = bridge.run_tests!(
+        test: %q{
+          describe("average", () => {
+            it("works with 3 elements", () => {
+              assert.equal(average([1, 2, 3]), 3);
+            });
+            it("works with 2 elements", () => {
+              assert.equal(average([1, 3]), 3);
+            });
+          });
+        },
+        extra: '',
+        content: 'function average(list) {  return  sum(list) / list.length }',
+        expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [
+                             {result: "sum is not defined", status: :failed, title: "average works with 3 elements"},
+                             {result: "sum is not defined", status: :failed, title: "average works with 2 elements"}],
+                           status: :failed,
+                           feedback: '* it looks like you are using `sum` but it is not defined. Perhaps you have misspelled it or you need to define it',
+                           expectation_results: [],
+                           result: '')
+  end
 end
