@@ -38,7 +38,7 @@ describe JavascriptExpectationsHook do
     let(:expectations) { [
       {binding: '*', inspection: 'DeclaresProcedure:foo'},
       {binding: '*', inspection: 'DeclaresProcedure:bar'},
-      {binding: '*', inspection: 'DeclaresProcedure:baz'}] }
+      {binding: '*', inspection: 'DeclaresProcedure:foobaz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: true},
@@ -52,7 +52,7 @@ describe JavascriptExpectationsHook do
     let(:expectations) { [
       {binding: '*', inspection: 'DeclaresFunction:foo'},
       {binding: '*', inspection: 'DeclaresFunction:bar'},
-      {binding: '*', inspection: 'DeclaresFunction:baz'}] }
+      {binding: '*', inspection: 'DeclaresFunction:foobaz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: true},
@@ -65,7 +65,7 @@ describe JavascriptExpectationsHook do
     let(:expectations) { [
       {binding: '*', inspection: 'DeclaresVariable:foo'},
       {binding: '*', inspection: 'DeclaresVariable:bar'},
-      {binding: '*', inspection: 'DeclaresVariable:baz'}] }
+      {binding: '*', inspection: 'DeclaresVariable:foobaz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: false},
@@ -78,7 +78,7 @@ describe JavascriptExpectationsHook do
     let(:expectations) { [
       {binding: '*', inspection: 'Declares:foo'},
       {binding: '*', inspection: 'Declares:bar'},
-      {binding: '*', inspection: 'Declares:baz'}] }
+      {binding: '*', inspection: 'Declares:foobaz'}] }
 
     it { expect(result).to eq [
         {expectation: expectations[0], result: true},
