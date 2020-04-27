@@ -1,2 +1,2 @@
 pt:
-  is_not_defined: "parece que você está usando `%{identifier}` mas não está definido. Talvez você tenha digitado errado ou precise defini-lo"
+  is_not_defined: "Parece que você usa %{identifier} mas não está indefinido. Você digitou o nome errado ou precisa defini-lo"
