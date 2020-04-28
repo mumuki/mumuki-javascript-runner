@@ -1,0 +1,2 @@
+en:
+  is_not_defined: "it looks like you are using `%{identifier}` but it is not defined. Perhaps you have misspelled it or you need to define it"
