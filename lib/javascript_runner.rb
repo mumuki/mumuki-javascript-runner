@@ -7,6 +7,7 @@ Mumukit.configure do |config|
   config.docker_image = 'mumuki/mumuki-mocha-worker'
   config.structured = true
   config.stateful = true
+  config.content_type = 'markdown'
 end
 
 require_relative './version'
