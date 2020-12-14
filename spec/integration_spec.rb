@@ -162,4 +162,34 @@ javascript
                            expectation_results: [],
                            result: '')
   end
+
+  it 'answers a valid hash when submission passes and has non-ascii chars' do
+    response = bridge.run_tests!(
+      test: %q{
+      describe("", function() {
+        let gustavo = {
+          nombre: "Gustavo Girot",
+          librosLeidos: ["Fundación", "Yo, Robot", "El resplandor", "Socorro"],
+          anioSuscripcion: 2010
+        };
+
+        it("el resumenLector de gustavo nos provee su información", function() {
+          assert.equal(resumenLector(gustavo), "Gustavo Girot se suscribió hace 10 años")
+        })
+      })
+    },
+    extra: '',
+    content: %q{
+    function resumenLector(quien) {
+      return quien.nombre + " se suscribió hace " + (2020 - quien.anioSuscripcion)  + " años";
+    }},
+    expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{result: "", status: :passed, title: " el resumenLector de gustavo nos provee su información"}],
+                           status: :passed,
+                           feedback: '',
+                           expectation_results: [],
+                           result: '')
+  end
 end

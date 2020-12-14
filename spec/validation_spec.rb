@@ -20,5 +20,6 @@ describe JavascriptValidationHook do
   it { expect(hook.validate! struct(query: 'aProcess')).to be nil }
 
   it { expect(hook.validate! struct(extra: 'var pesoPromedioPersonaEnKilogramos = 75;')).to be nil }
+  it { expect(hook.validate! struct(extra: 'var _os_ = 75;')).to be nil }
 
 end
