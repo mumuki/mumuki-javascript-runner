@@ -162,4 +162,67 @@ javascript
                            expectation_results: [],
                            result: '')
   end
+
+  it 'ñ' do
+    response = bridge.run_tests!(
+      test: %q{
+      describe("", function() {
+        let juan = {
+          nombre: "Juan Arrever",
+          librosLeidos: ["El conde de Montecristo", "La palabra", "Mi planta de naranja lima"],
+          anioSuscripcion: 1992
+        };
+
+        let elena = {
+          nombre: "Elena Chalver",
+          librosLeidos: ["Rabia", "Vida de Bob Marley"],
+          anioSuscripcion: 1987
+        };
+
+        let gustavo = {
+          nombre: "Gustavo Girot",
+          librosLeidos: ["Fundación", "Yo, Robot", "El resplandor", "Socorro"],
+          anioSuscripcion: 2010
+        };
+
+        it("el resumenLector de gustavo nos provee su información", function() {
+          assert.equal(resumenLector(gustavo), "Gustavo Girot se suscribió hace 10 anios y leyó 4 libros.")
+        })
+
+        it("el resumenLector de juan nos provee su información", function() {
+          assert.equal(resumenLector(juan), "Juan Arrever se suscribió hace 28 anios y leyó 3 libros.")
+        })
+
+        it("el resumenLector de elena nos provee su información", function() {
+          assert.equal(resumenLector(elena), "Elena Chalver se suscribió hace 33 anios y leyó 2 libros.")
+        })
+      })
+    },
+    extra: %q{
+    function longitud(unStringOLista) /*<elipsis-for-student@*/ {
+      return unStringOLista.length;
+    } /*@elipsis-for-student>*/
+    // Retorna el largo de un string o una lista
+    //
+    // Por ejemplo:
+    //
+    //  ム longitud("hola")
+    //  4
+    //  ム longitud([5, 6, 3])
+    //  3
+    },
+    content: %q{
+    function resumenLector(quien) {
+      "año"
+      return quien.nombre + " se suscribió hace " + (2020 - quien.anioSuscripcion)  + " años y leyó "+ quien.librosLeidos.length +" libros."
+    }},
+    expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{title: 'foo bar', status: :passed, result: ''}],
+                           status: :passed,
+                           feedback: '',
+                           expectation_results: [],
+                           result: '')
+  end
 end
