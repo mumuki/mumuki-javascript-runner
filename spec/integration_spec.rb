@@ -84,7 +84,7 @@ javascript
 
     expect(response).to eq(response_type: :structured,
                            test_results: [
-                               {title: 'foo bar', status: :failed, result: '2 == 3'}],
+                               {title: 'foo bar', status: :failed, result: format('2 == 3')}],
                            status: :failed,
                            feedback: '',
                            expectation_results: [],
@@ -129,7 +129,7 @@ javascript
                                  locale: 'pt')
 
     expect(response).to eq(response_type: :structured,
-                           test_results: [{title: 'foo bar', status: :failed, result: '3 == 4'}],
+                           test_results: [{title: 'foo bar', status: :failed, result: format('3 == 4')}],
                            status: :failed,
                            feedback: '',
                            expectation_results: [],
@@ -155,8 +155,8 @@ javascript
 
     expect(response).to eq(response_type: :structured,
                            test_results: [
-                             {result: "sum is not defined", status: :failed, title: "average works with 3 elements"},
-                             {result: "sum is not defined", status: :failed, title: "average works with 2 elements"}],
+                             {result: format('sum is not defined'), status: :failed, title: 'average works with 3 elements'},
+                             {result: format('sum is not defined'), status: :failed, title: 'average works with 2 elements'}],
                            status: :failed,
                            feedback: '* it looks like you are using `sum` but it is not defined. Perhaps you have misspelled it or you need to define it',
                            expectation_results: [],
@@ -192,4 +192,64 @@ javascript
                            expectation_results: [],
                            result: '')
   end
+
+  it 'answers a properly formatted hash when result includes quotation marks' do
+    response = bridge.run_tests!(
+      test: %q{
+      describe("", function() {
+        let juan = {
+          nombre: "juan arrever",
+          librosLeidos: ["El conde de Montecristo", "La palabra", "Mi planta de naranja lima"],
+          anioSuscripcion: 1992
+        };
+
+        let elena = {
+          nombre: "elena chalver",
+          librosLeidos: ["Rabia", "Vida de Bob Marley"],
+          anioSuscripcion: 1987
+        };
+
+        let gustavo = {
+          nombre: "gustavo girot",
+          librosLeidos: ["Fundación", "Yo, Robot", "El resplandor", "Socorro"],
+          anioSuscripcion: 2010
+        };
+
+        it("el resumenSuscripcion de gustavo nos provee su información", function() {
+          assert.equal(resumenSuscripcion(gustavo), "gustavo girot se suscribio hace 10 años y leyo 4 libros")
+        })
+
+        it("el resumenSuscripcion de juan nos provee su información", function() {
+          assert.equal(resumenSuscripcion(juan), "juan arrever se suscribio hace 28 años y leyo 3 libros")
+        })
+
+        it("el resumenSuscripcion de elena nos provee su información", function() {
+          assert.equal(resumenSuscripcion(elena), "elena chalver se suscribio hace 33 años y leyo 2 libros")
+        })
+      })
+    },
+      extra: 'function longitud(unStringOLista) { return unStringOLista.length;}',
+      content: %q{
+      function resumenSuscripcion(registro) {
+        return registro.nombre + " " + "se suscribio hace " + ( 2020 - registro.anioSuscripcion) + " " + "años" + " " + "y leyo " + " " + longitud(registro.librosLeidos) + " " + "libros";
+      }},
+      expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{title: ' el resumenSuscripcion de gustavo nos provee su información',
+                                           status: :failed,
+                                           result: format("'gustavo girot se suscribio hace 10 años y leyo  4 libros' == 'gustavo girot se suscribio hace 10 años y leyo 4 libros'")},
+                                          {title: ' el resumenSuscripcion de juan nos provee su información',
+                                           status: :failed,
+                                           result: format("'juan arrever se suscribio hace 28 años y leyo  3 libros' == 'juan arrever se suscribio hace 28 años y leyo 3 libros'")},
+                                          {title: ' el resumenSuscripcion de elena nos provee su información',
+                                           status: :failed,
+                                           result: format("'elena chalver se suscribio hace 33 años y leyo  2 libros' == 'elena chalver se suscribio hace 33 años y leyo 2 libros'")}],
+                           status: :failed,
+                           feedback: '',
+                           expectation_results: [],
+                           result: '')
+  end
+
+
 end
