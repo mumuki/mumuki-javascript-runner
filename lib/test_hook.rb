@@ -37,6 +37,6 @@ javascript
   end
 
   def parse_out(exception)
-    exception.present? ? exception['message'] : ''
+    exception.present? ? Mumukit::ContentType::Markdown.code(exception['message']) : ''
   end
 end
