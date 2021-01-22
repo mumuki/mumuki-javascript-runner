@@ -39,7 +39,7 @@ javascript
       end
 
       it { expect(results).to(
-          eq([['_true is is something that will fail', :failed, 'true == 3']])) }
+          eq([['_true is is something that will fail', :failed, format('true == 3')]])) }
     end
 
     context 'on multi file' do
@@ -62,7 +62,7 @@ end
       it { expect(results).to(
           eq([['_true is true', :passed, ''],
               ['_true is not _false', :passed, ''],
-              ['_true is is something that will fail', :failed, 'true == 3']])) }
+              ['_true is is something that will fail', :failed, format('true == 3')]])) }
     end
 
     context 'when content contains a logging operation' do
