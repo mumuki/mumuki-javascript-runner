@@ -19,6 +19,17 @@ describe('', function() {
 javascript
   end
 
+  def post_process_file(file, result, status)
+    result = extract_result(result)
+    if [:passed, :failed].include? status
+      [to_structured_result(result)]
+    else
+      post_process_unstructured_result(file, result, status)
+    end
+  rescue JSON::ParserError
+    post_process_unstructured_result(file, result, :errored)
+  end
+
   def tempfile_extension
     '.js'
   end
@@ -31,8 +42,12 @@ javascript
     transform(super['tests'])
   end
 
-  def cleanup_raw_result(result)
-    super.gsub(/(SyntaxError: .*\n)(.|\n)*/) { $1 }
+  def post_process_unstructured_result(file, result, status)
+    if status.errored?
+      [result.gsub(/(SyntaxError: .*\n)(.|\n)*/) { $1 }, status]
+    else
+      super
+    end
   end
 
   def transform(examples)
