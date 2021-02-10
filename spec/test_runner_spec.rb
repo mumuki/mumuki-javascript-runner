@@ -7,6 +7,7 @@ describe 'running' do
   let(:file) { runner.compile(OpenStruct.new(content: content, test: test, extra: extra)) }
   let(:raw_results) { runner.run!(file) }
   let(:results) { raw_results[0] }
+  let(:status) { raw_results[1] }
 
   let(:extra) { '' }
 
@@ -40,6 +41,126 @@ javascript
 
       it { expect(results).to(
           eq([['_true is is something that will fail', :failed, format('true == 3')]])) }
+    end
+
+    context 'on simple errored file' do
+      context 'wrong return token' do
+        let(:content) do
+          <<javascript
+function helloWorld() {
+  reurn 4 + 5
+}
+javascript
+        end
+
+        let(:test) do
+        <<javascript
+  describe('_true', () => {
+      it('is true', () => assert.equal(_true, true));
+  });
+javascript
+        end
+
+        it { expect(status).to eq :errored }
+        it { expect(results).to eq(
+        <<EOF
+solution.js:2
+  reurn 4 + 5
+        ^
+
+SyntaxError: Unexpected number
+EOF
+        ) }
+      end
+
+      context 'missing open brace' do
+        let(:content) do
+          <<javascript
+function helloWorld()
+  return 4 + 5
+}
+javascript
+        end
+
+        let(:test) do
+        <<javascript
+  describe('_true', () => {
+      it('is true', () => assert.equal(_true, true));
+  });
+javascript
+        end
+
+        it { expect(status).to eq :errored }
+        it { expect(results).to eq(
+        <<EOF
+solution.js:2
+  return 4 + 5
+  ^^^^^^
+
+SyntaxError: Unexpected token return
+EOF
+        ) }
+      end
+
+      context 'wrong function token' do
+        let(:content) do
+          <<javascript
+funcion helloWorld() {
+  return 4 + 5
+}
+javascript
+        end
+
+        let(:test) do
+        <<javascript
+  describe('_true', () => {
+      it('is true', () => assert.equal(_true, true));
+  });
+javascript
+        end
+
+        it { expect(status).to eq :errored }
+        it { expect(results).to eq(
+        <<EOF
+solution.js:1
+funcion helloWorld() {
+        ^^^^^^^^^^
+
+SyntaxError: Unexpected identifier
+EOF
+        ) }
+      end
+
+      context 'missing close brace' do
+        let(:content) do
+          <<javascript
+function helloWorld() {
+  return 4 + 5
+
+javascript
+        end
+
+        let(:test) do
+        <<javascript
+  describe('_true', () => {
+      it('is true', () => assert.equal(_true, true));
+  });
+javascript
+        end
+
+        it { expect(status).to eq :errored }
+        it { expect(results).to eq(
+        <<EOF
+solution.js:16
+});
+ ^
+
+SyntaxError: Unexpected token )
+EOF
+        ) }
+      end
+
+
     end
 
     context 'on multi file' do

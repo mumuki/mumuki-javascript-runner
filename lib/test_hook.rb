@@ -31,6 +31,10 @@ javascript
     transform(super['tests'])
   end
 
+  def cleanup_raw_result(result)
+    super.gsub(/(SyntaxError: .*\n)(.|\n)*/) { $1 }
+  end
+
   def transform(examples)
     examples.map { |e| [e['fullTitle'], e['err'].present? ? :failed : :passed, parse_out(e['err'])] }
   end
