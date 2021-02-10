@@ -64,11 +64,16 @@ javascript
         it { expect(status).to eq :errored }
         it { expect(results).to eq(
         <<EOF
+
+```
 solution.js:2
   reurn 4 + 5
         ^
 
 SyntaxError: Unexpected number
+
+```
+
 EOF
         ) }
       end
@@ -93,11 +98,16 @@ javascript
         it { expect(status).to eq :errored }
         it { expect(results).to eq(
         <<EOF
+
+```
 solution.js:2
   return 4 + 5
   ^^^^^^
 
 SyntaxError: Unexpected token return
+
+```
+
 EOF
         ) }
       end
@@ -122,11 +132,16 @@ javascript
         it { expect(status).to eq :errored }
         it { expect(results).to eq(
         <<EOF
+
+```
 solution.js:1
 funcion helloWorld() {
         ^^^^^^^^^^
 
 SyntaxError: Unexpected identifier
+
+```
+
 EOF
         ) }
       end
@@ -151,11 +166,16 @@ javascript
         it { expect(status).to eq :errored }
         it { expect(results).to eq(
         <<EOF
+
+```
 solution.js:16
 });
  ^
 
 SyntaxError: Unexpected token )
+
+```
+
 EOF
         ) }
       end
