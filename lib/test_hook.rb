@@ -44,7 +44,7 @@ javascript
 
   def post_process_unstructured_result(file, result, status)
     if status.errored?
-      [Mumukit::ContentType::Markdown.code(result.gsub(/(SyntaxError: .*\n)(.|\n)*/) { $1 }), status]
+      [content_type.code(result.gsub(/(SyntaxError: .*\n)(.|\n)*/) { $1 }), status]
     else
       super
     end
@@ -55,6 +55,6 @@ javascript
   end
 
   def parse_out(exception)
-    exception.present? ? Mumukit::ContentType::Markdown.code(exception['message']) : ''
+    exception.present? ? content_type.code(exception['message']) : ''
   end
 end
