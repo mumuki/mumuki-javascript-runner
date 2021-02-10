@@ -1,13 +1,12 @@
 class JavascriptTestHook < Mumukit::Templates::FileHook
   isolated true
   structured true, separator: '!!!JAVASCRIPT-MUMUKI-OUTPUT!!!'
+  line_number_offset 3, include_extra: true
 
   def compile_file_content(request)
 <<javascript
 'use strict';
-
 let assert = require('assert');
-
 #{request.extra}
 #{request.content}
 describe('', function() {
