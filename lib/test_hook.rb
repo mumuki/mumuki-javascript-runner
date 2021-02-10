@@ -19,17 +19,6 @@ describe('', function() {
 javascript
   end
 
-  def post_process_file(file, result, status)
-    result = extract_result(result)
-    if [:passed, :failed].include? status
-      [to_structured_result(result)]
-    else
-      post_process_unstructured_result(file, result, status)
-    end
-  rescue JSON::ParserError
-    post_process_unstructured_result(file, result, :errored)
-  end
-
   def tempfile_extension
     '.js'
   end
