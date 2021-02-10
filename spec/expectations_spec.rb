@@ -34,7 +34,7 @@ describe JavascriptExpectationsHook do
   end
 
   describe 'DeclaresProcedure' do
-    let(:code) { "function foo(x, y) { }\nvar bar = 4;" }
+    let(:code) { "function foo(x, y) { }\nlet bar = 4;" }
     let(:expectations) { [
       {binding: '*', inspection: 'DeclaresProcedure:foo'},
       {binding: '*', inspection: 'DeclaresProcedure:bar'},
@@ -48,7 +48,7 @@ describe JavascriptExpectationsHook do
 
 
   describe 'DeclaresFunction' do
-    let(:code) { "function foo(x, y) { return x + y; }\nvar bar = 4;" }
+    let(:code) { "function foo(x, y) { return x + y; }\nlet bar = 4;" }
     let(:expectations) { [
       {binding: '*', inspection: 'DeclaresFunction:foo'},
       {binding: '*', inspection: 'DeclaresFunction:bar'},
@@ -61,7 +61,7 @@ describe JavascriptExpectationsHook do
   end
 
   describe 'DeclaresVariable' do
-    let(:code) { "function foo(x, y) { }\nvar bar = 4;" }
+    let(:code) { "function foo(x, y) { }\nlet bar = 4;" }
     let(:expectations) { [
       {binding: '*', inspection: 'DeclaresVariable:foo'},
       {binding: '*', inspection: 'DeclaresVariable:bar'},
@@ -74,7 +74,7 @@ describe JavascriptExpectationsHook do
   end
 
   describe 'Declares' do
-    let(:code) { "function foo(x, y) { }\nvar bar = 4;" }
+    let(:code) { "function foo(x, y) { }\nlet bar = 4;" }
     let(:expectations) { [
       {binding: '*', inspection: 'Declares:foo'},
       {binding: '*', inspection: 'Declares:bar'},

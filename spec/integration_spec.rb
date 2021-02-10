@@ -11,7 +11,7 @@ describe 'runner' do
   after(:all) { Process.kill 'TERM', @pid }
 
   it 'prevents malicious net related code' do
-    response = bridge.run_tests!(test: 'var http = require("http"); describe("foo", () => it("bar", (done) => foo(http, done)))',
+    response = bridge.run_tests!(test: 'let http = require("http"); describe("foo", () => it("bar", (done) => foo(http, done)))',
                                  extra: '',
                                  expectations: [],
                                  content: <<-javascript
@@ -36,7 +36,7 @@ javascript
   it 'answers a valid hash when submission is ok' do
     response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 3)))',
                                  extra: '',
-                                 content: 'var aVariable = 3',
+                                 content: 'let aVariable = 3',
                                  expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -49,8 +49,8 @@ javascript
 
   it 'answers a valid hash when submission is ok but has part of blacklisted words' do
     response = bridge.run_tests!(test: 'describe("foos", () => it("bar", () => assert.equal(aVariable, 3)))',
-                                 extra: 'var flos = 75;',
-                                 content: 'var aVariable = 3',
+                                 extra: 'let flos = 75;',
+                                 content: 'let aVariable = 3',
                                  expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -64,7 +64,7 @@ javascript
   it 'answers a valid hash when submission is ok with warnings' do
     response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                                  extra: '',
-                                 content: 'var x = 3',
+                                 content: 'let x = 3',
                                  expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -75,11 +75,25 @@ javascript
                            result: '')
   end
 
+  it 'answers a valid hash when submission is ok with JS-specific warnings' do
+    response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(something, 3)))',
+                                 extra: '',
+                                 content: 'var something = 3',
+                                 expectations: [])
+
+    expect(response).to eq(response_type: :structured,
+                           test_results: [{title: 'foo bar', status: :passed, result: ''}],
+                           status: :passed_with_warnings,
+                           feedback: '',
+                           expectation_results: [{binding: '*', inspection: 'JavaScript#UsesVarInsteadOfLet', result: :failed}],
+                           result: '')
+  end
+
   it 'answers a valid hash when submission is not ok' do
     response = bridge.
         run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 3)))',
                    extra: '',
-                   content: 'var aVariable = 2',
+                   content: 'let aVariable = 2',
                    expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -95,7 +109,7 @@ javascript
     response = bridge.
         run_tests!(test: 'describe("foo", () => it("bar", function (done) { this.timeout(5000); setTimeout(() => { assert.equal(x, 3); done() }, 5000) }))',
                    extra: '',
-                   content: 'var x = 2',
+                   content: 'let x = 2',
                    expectations: [])
 
     expect(response).to eq(response_type: :unstructured,
@@ -111,7 +125,7 @@ javascript
     response = bridge.
         run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(x, 3)))',
                    extra: '',
-                   content: 'var x = ).',
+                   content: 'let x = ).',
                    expectations: [])
 
     expect(response[:status]).to eq :errored
@@ -124,7 +138,7 @@ javascript
   it 'answers a valid hash when given a known locale' do
     response = bridge.run_tests!(test: 'describe("foo", () => it("bar", () => assert.equal(aVariable, 4)))',
                                  extra: '',
-                                 content: 'var aVariable = 3',
+                                 content: 'let aVariable = 3',
                                  expectations: [],
                                  locale: 'pt')
 

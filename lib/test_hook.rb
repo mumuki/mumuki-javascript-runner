@@ -6,7 +6,7 @@ class JavascriptTestHook < Mumukit::Templates::FileHook
 <<javascript
 'use strict';
 
-var assert = require('assert');
+let assert = require('assert');
 
 #{request.extra}
 #{request.content}
