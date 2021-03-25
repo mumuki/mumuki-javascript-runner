@@ -20,7 +20,7 @@ function foo(http, done) {
 }
 javascript
     )
-    expect(response[:test_results][0][:result]).to include('getaddrinfo ENOTFOUND')
+    expect(response[:test_results][0][:result]).to include('getaddrinfo EAI_AGAIN google.com:80')
     expect(response[:status]).to eq(:failed)
   end
 
@@ -200,7 +200,7 @@ javascript
     expectations: [])
 
     expect(response).to eq(response_type: :structured,
-                           test_results: [{result: "", status: :passed, title: " el resumenLector de gustavo nos provee su información"}],
+                           test_results: [{result: "", status: :passed, title: "el resumenLector de gustavo nos provee su información"}],
                            status: :passed,
                            feedback: '',
                            expectation_results: [],
@@ -250,13 +250,13 @@ javascript
       expectations: [])
 
     expect(response).to eq(response_type: :structured,
-                           test_results: [{title: ' el resumenSuscripcion de gustavo nos provee su información',
+                           test_results: [{title: 'el resumenSuscripcion de gustavo nos provee su información',
                                            status: :failed,
                                            result: format("'gustavo girot se suscribio hace 10 años y leyo  4 libros' == 'gustavo girot se suscribio hace 10 años y leyo 4 libros'")},
-                                          {title: ' el resumenSuscripcion de juan nos provee su información',
+                                          {title: 'el resumenSuscripcion de juan nos provee su información',
                                            status: :failed,
                                            result: format("'juan arrever se suscribio hace 28 años y leyo  3 libros' == 'juan arrever se suscribio hace 28 años y leyo 3 libros'")},
-                                          {title: ' el resumenSuscripcion de elena nos provee su información',
+                                          {title: 'el resumenSuscripcion de elena nos provee su información',
                                            status: :failed,
                                            result: format("'elena chalver se suscribio hace 33 años y leyo  2 libros' == 'elena chalver se suscribio hace 33 años y leyo 2 libros'")}],
                            status: :failed,

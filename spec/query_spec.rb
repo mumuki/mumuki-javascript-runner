@@ -29,6 +29,11 @@ describe JavascriptQueryHook do
       it { expect(result[0]).to eq "=> [1,2,3]\n" }
     end
 
+    context 'array with message query' do
+      let(:request) { struct(query: '[1,2, 3].includes(2)') }
+      it { expect(result[0]).to eq "=> true\n" }
+    end
+
     context 'null query' do
       let(:request) { struct(query: 'null') }
       it { expect(result[0]).to eq "=> null\n" }
