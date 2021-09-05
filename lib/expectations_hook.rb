@@ -1,6 +1,12 @@
 class JavascriptExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   include_smells true
 
+  ESLINT_RULES = {
+    'indent' => 'HasInconsistentIndentation',
+    'semi' => 'JavaScript#LacksOfEndingSemicolon',
+    'brace-style' => 'JavaScript#HasInconsistentBraces',
+    'no-empty' => 'HasEmptyCodeBlock'
+  }.freeze
 
   def run!(spec)
     super(spec) + run_eslint(spec[:request][:content])
@@ -16,7 +22,7 @@ class JavascriptExpectationsHook < Mumukit::Templates::MulangExpectationsHook
         {
           expectation: {
             binding: lines[it["line"] - 1],
-            inspection: it["ruleId"]
+            inspection: ESLINT_RULES[it["ruleId"]]
           },
           result: false
         }
