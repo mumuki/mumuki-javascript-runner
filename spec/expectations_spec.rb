@@ -86,4 +86,39 @@ describe JavascriptExpectationsHook do
         {expectation: expectations[2], result: false}] }
   end
 
+  describe "eslint smells" do
+    describe 'HasInconsistentIndentation' do
+      let(:code) { "function foo(x, y) {\nreturn 5; }" }
+      let(:expectations) { [] }
+
+      it { expect(result).to eq [
+          {expectation: {binding: '*', inspection: 'HasInconsistentIndentation'}, result: false}] }
+    end
+
+    describe 'JavaScript#LacksOfEndingSemicolon' do
+      let(:code) { "let variable1 = 1\nlet variable2 = 2;\nlet variable3 = 3" }
+      let(:expectations) { [] }
+
+      it { expect(result).to eq [
+          {expectation: {binding: "let variable1 = 1\n", inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false},
+          {expectation: {binding: 'let variable3 = 3', inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false}] }
+    end
+
+    describe 'JavaScript#HasInconsistentBraces' do
+      let(:code) { "function foo(x, y) \n{ }" }
+      let(:expectations) { [] }
+
+      it { expect(result).to eq [
+          {expectation: {binding: '*', inspection: 'JavaScript#HasInconsistentBraces'}, result: false}] }
+    end
+
+    describe 'HasEmptyCodeBlock' do
+      let(:code) { "function foo(x, y) \n{ { }; return; }" }
+      let(:expectations) { [] }
+
+      it { expect(result).to eq [
+          {expectation: {binding: '{ { }; return; }', inspection: 'HasEmptyCodeBlock'}, result: false}] }
+    end
+  end
+
 end
