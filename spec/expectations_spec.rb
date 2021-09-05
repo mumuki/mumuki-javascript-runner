@@ -20,7 +20,7 @@ describe JavascriptExpectationsHook do
   end
 
   describe 'HasWrongCaseIdentifiers' do
-    let(:code) { "function a_function_with_bad_case() { return 3 }" }
+    let(:code) { "function a_function_with_bad_case() { return 3; }" }
     let(:expectations) { [] }
 
     it { expect(result).to eq [{expectation: {binding: 'a_function_with_bad_case', inspection: 'HasWrongCaseIdentifiers'}, result: false}] }
