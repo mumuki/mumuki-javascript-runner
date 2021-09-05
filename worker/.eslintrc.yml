@@ -4,17 +4,6 @@ env:
 parserOptions:
   ecmaVersion: 12
 rules:
-  indent:
-    - error
-    - 2
   semi:
     - error
     - always
-  no-dupe-keys:
-    - error
-  no-empty:
-    - error
-  brace-style:
-    - error
-    - 1tbs
-    - allowSingleLine: true

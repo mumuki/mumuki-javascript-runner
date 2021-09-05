@@ -11,6 +11,7 @@ describe JavascriptExpectationsHook do
 
   let(:runner) { JavascriptExpectationsHook.new }
   let(:result) { compile_and_run(req(expectations, code)) }
+  let(:translations) { result.select { |it| !it[:result] }.map { |it| Mulang::Expectation.parse(it[:expectation]).translate } }
 
   describe 'HasTooShortIdentifiers' do
     let(:code) { "function f(x) { retun g(x); }" }
@@ -87,37 +88,18 @@ describe JavascriptExpectationsHook do
   end
 
   describe "eslint smells" do
-    describe 'HasInconsistentIndentation' do
-      let(:code) { "function foo(x, y) {\nreturn 5; }" }
-      let(:expectations) { [] }
-
-      it { expect(result).to eq [
-          {expectation: {binding: '*', inspection: 'HasInconsistentIndentation'}, result: false}] }
-    end
+    let(:expectations) { [] }
 
     describe 'JavaScript#LacksOfEndingSemicolon' do
       let(:code) { "let variable1 = 1\nlet variable2 = 2;\nlet variable3 = 3" }
-      let(:expectations) { [] }
 
       it { expect(result).to eq [
-          {expectation: {binding: "let variable1 = 1\n", inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false},
+          {expectation: {binding: "let variable1 = 1", inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false},
           {expectation: {binding: 'let variable3 = 3', inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false}] }
-    end
-
-    describe 'JavaScript#HasInconsistentBraces' do
-      let(:code) { "function foo(x, y) \n{ }" }
-      let(:expectations) { [] }
-
-      it { expect(result).to eq [
-          {expectation: {binding: '*', inspection: 'JavaScript#HasInconsistentBraces'}, result: false}] }
-    end
-
-    describe 'HasEmptyCodeBlock' do
-      let(:code) { "function foo(x, y) \n{ { }; return; }" }
-      let(:expectations) { [] }
-
-      it { expect(result).to eq [
-          {expectation: {binding: '{ { }; return; }', inspection: 'HasEmptyCodeBlock'}, result: false}] }
+      it { expect(translations).to eq [
+        "the following line should end with <code>;</code>: <pre><code>let variable1 = 1</code></pre>",
+        "the following line should end with <code>;</code>: <pre><code>let variable3 = 3</code></pre>"
+      ] }
     end
   end
 

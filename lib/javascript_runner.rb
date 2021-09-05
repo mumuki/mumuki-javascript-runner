@@ -18,3 +18,5 @@ require_relative './expectations_hook'
 require_relative './feedback_hook'
 require_relative './query_hook'
 require_relative './try_hook'
+
+Mulang::Inspection.register_extension! Mumukit::Inspection::JavaScript

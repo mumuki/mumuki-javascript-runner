@@ -2,10 +2,7 @@ class JavascriptExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   include_smells true
 
   ESLINT_RULES = {
-    'indent' => 'HasInconsistentIndentation',
-    'semi' => 'JavaScript#LacksOfEndingSemicolon',
-    'brace-style' => 'JavaScript#HasInconsistentBraces',
-    'no-empty' => 'HasEmptyCodeBlock'
+    'semi' => 'JavaScript#LacksOfEndingSemicolon'
   }.freeze
 
   def run!(spec)
@@ -13,7 +10,7 @@ class JavascriptExpectationsHook < Mumukit::Templates::MulangExpectationsHook
   end
 
   def run_eslint(content)
-    lines = content.lines
+    lines = content.lines.map(&:rstrip)
     out, status = Open3.capture2("eslint --format json --stdin", stdin_data: content)
     result = JSON.parse(out)[0]
 
