@@ -194,9 +194,9 @@ javascript
     },
     extra: '',
     content: %q{
-    function resumenLector(quien) {
-      return quien.nombre + " se suscribió hace " + (2020 - quien.anioSuscripcion)  + " años";
-    }},
+function resumenLector(quien) {
+  return quien.nombre + " se suscribió hace " + (2020 - quien.anioSuscripcion)  + " años";
+}},
     expectations: [])
 
     expect(response).to eq(response_type: :structured,
@@ -244,9 +244,9 @@ javascript
     },
       extra: 'function longitud(unStringOLista) { return unStringOLista.length;}',
       content: %q{
-      function resumenSuscripcion(registro) {
-        return registro.nombre + " " + "se suscribio hace " + ( 2020 - registro.anioSuscripcion) + " " + "años" + " " + "y leyo " + " " + longitud(registro.librosLeidos) + " " + "libros";
-      }},
+function resumenSuscripcion(registro) {
+  return registro.nombre + " " + "se suscribio hace " + ( 2020 - registro.anioSuscripcion) + " " + "años" + " " + "y leyo " + " " + longitud(registro.librosLeidos) + " " + "libros";
+}},
       expectations: [])
 
     expect(response).to eq(response_type: :structured,
