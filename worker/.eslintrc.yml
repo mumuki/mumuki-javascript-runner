@@ -14,10 +14,6 @@ rules:
     - error
   no-empty:
     - error
-  no-unreachable:
-    - error
-  eqeqeq:
-    - error
   brace-style:
     - error
     - 1tbs
