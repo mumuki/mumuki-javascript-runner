@@ -11,6 +11,7 @@ describe JavascriptExpectationsHook do
 
   let(:runner) { JavascriptExpectationsHook.new }
   let(:result) { compile_and_run(req(expectations, code)) }
+  let(:translations) { result.select { |it| !it[:result] }.map { |it| Mulang::Expectation.parse(it[:expectation]).translate } }
 
   describe 'HasTooShortIdentifiers' do
     let(:code) { "function f(x) { retun g(x); }" }
@@ -20,7 +21,7 @@ describe JavascriptExpectationsHook do
   end
 
   describe 'HasWrongCaseIdentifiers' do
-    let(:code) { "function a_function_with_bad_case() { return 3 }" }
+    let(:code) { "function a_function_with_bad_case() { return 3; }" }
     let(:expectations) { [] }
 
     it { expect(result).to eq [{expectation: {binding: 'a_function_with_bad_case', inspection: 'HasWrongCaseIdentifiers'}, result: false}] }
@@ -84,6 +85,22 @@ describe JavascriptExpectationsHook do
         {expectation: expectations[0], result: true},
         {expectation: expectations[1], result: true},
         {expectation: expectations[2], result: false}] }
+  end
+
+  describe "eslint smells" do
+    let(:expectations) { [] }
+
+    describe 'JavaScript#LacksOfEndingSemicolon' do
+      let(:code) { "let variable1 = 1\nlet variable2 = 2;\nlet variable3 = 3" }
+
+      it { expect(result).to eq [
+          {expectation: {binding: "let variable1 = 1", inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false},
+          {expectation: {binding: 'let variable3 = 3', inspection: 'JavaScript#LacksOfEndingSemicolon'}, result: false}] }
+      it { expect(translations).to eq [
+        "the following line should end with <code>;</code>: <pre><code>let variable1 = 1</code></pre>",
+        "the following line should end with <code>;</code>: <pre><code>let variable3 = 3</code></pre>"
+      ] }
+    end
   end
 
 end
