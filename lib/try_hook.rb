@@ -29,15 +29,12 @@ js
   end
 
   def to_structured_results(_file, result, status)
-    /#{query_separator}
-?(.*)
-#{goal_separator}
-?(.*)
-/m =~ result
+    query_result = result[/#{query_separator}\n\K.*?(?=\n#{goal_separator}|\z)/m]
+    goal = result[/#{goal_separator}\n\K.*(?=\n)/m]
 
     {
-        query: to_query_result($1, status),
-        goal: $2,
+        query: to_query_result(query_result, status),
+        goal: goal,
         status: status
     }
   end
