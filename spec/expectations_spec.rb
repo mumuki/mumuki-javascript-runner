@@ -13,7 +13,7 @@ describe JavascriptExpectationsHook do
   let(:result) { compile_and_run(req(expectations, code)) }
 
   describe 'HasTooShortIdentifiers' do
-    let(:code) { "function f(x) { retun g(x); }" }
+    let(:code) { "function f(x) { return g(x); }" }
     let(:expectations) { [] }
 
     it { expect(result).to eq [{expectation: {binding: 'f', inspection: 'HasTooShortIdentifiers'}, result: false}] }
