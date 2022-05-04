@@ -117,6 +117,8 @@ describe JavascriptTryHook do
     let(:goal) { { kind: 'last_query_fails' } }
     let(:query) { 'foo()' }
 
+    it { expect(result[1]).to eq :passed }
+    it { expect(result[2][:status]).to eq :failed }
     it { expect(result[2][:result]).to include 'ReferenceError: foo is not defined' }
   end
 end
