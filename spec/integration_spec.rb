@@ -266,4 +266,7 @@ javascript
   end
 
 
+  it 'exposes external editor' do
+    expect(bridge.info['external_editor_instructions']['*']['en']).to start_with '### Setup instructions'
+  end
 end

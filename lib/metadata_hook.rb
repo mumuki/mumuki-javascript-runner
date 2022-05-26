@@ -1,4 +1,12 @@
 class JavascriptMetadataHook < Mumukit::Hook
+  XCE_INSTRUCTIONS = {
+    '*': {
+      'en': File.read("xce/en/README.md"),
+      'es-ar': File.read("xce/es-ar/README.md"),
+      'es-cl': File.read("xce/es-cl/README.md")
+    }
+  }
+
   def metadata
     {language: {
         name: 'javascript',
@@ -18,6 +26,8 @@ describe("{{ test_template_group_description }}", function() {
   })
 })
 js
-     }}
+     },
+     external_editor_instructions: XCE_INSTRUCTIONS
+    }
   end
 end
