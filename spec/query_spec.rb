@@ -199,4 +199,11 @@ SyntaxError: Unexpected token )` }
     it { expect(result[0]).to_not include '__mumuki_query_result__' }
     it { expect(result[1]).to eq :errored }
   end
+
+  context 'console log query with cookie' do
+    let(:request) { struct(query: 'console.log("foo")', cookie: ['console.log("bar")']) }
+    it { expect(result[0]).to include 'foo' }
+    it { expect(result[0]).to_not include 'bar' }
+    it { expect(result[1]).to eq :passed }
+  end
 end
