@@ -113,12 +113,21 @@ describe JavascriptTryHook do
     end
   end
 
-  context 'when query errors result is not blank' do
+  context 'when query fails result is not blank' do
     let(:goal) { { kind: 'last_query_fails' } }
     let(:query) { 'foo()' }
 
     it { expect(result[1]).to eq :passed }
     it { expect(result[2][:status]).to eq :failed }
     it { expect(result[2][:result]).to include 'ReferenceError: foo is not defined' }
+  end
+
+  context 'when query errors result is not blank' do
+    let(:goal) { { kind: 'last_query_fails' } }
+    let(:query) { 'foo)' }
+
+    it { expect(result[1]).to eq :failed }
+    it { expect(result[2][:status]).to eq :errored }
+    it { expect(result[2][:result]).to include 'SyntaxError: Unexpected token )' }
   end
 end

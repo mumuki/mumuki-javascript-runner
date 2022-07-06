@@ -29,17 +29,21 @@ js
   end
 
   def to_structured_results(_file, result, status)
-    query_result = result[/#{query_separator}\n\K.*?(?=\n#{goal_separator}|\z)/m]
     goal = result[/#{goal_separator}\n\K.*(?=\n)/m]
 
     {
-        query: to_query_result(query_result, status),
+        query: to_query_result(result, status),
         goal: goal,
         status: status
     }
   end
 
   def to_query_result(result, status)
-    { result: result, status: status }
+    case result
+    when /#{query_separator}\n(.*?)\n(#{goal_separator}|\z)/m
+      { result: $1, status: status }
+    else
+      { result: result, status: :errored }
+    end
   end
 end
