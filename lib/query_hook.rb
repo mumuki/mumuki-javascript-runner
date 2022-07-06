@@ -28,7 +28,10 @@ function mumukiConsolePrettyPrint(e) {
 
 #{r.content}
 
+const mumukiConsoleLog = console.log
+console.log = (...data) => {}
 #{compile_cookie(r.cookie)}
+console.log = mumukiConsoleLog
 javascript
   end
 
